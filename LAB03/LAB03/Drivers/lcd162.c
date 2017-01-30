@@ -115,7 +115,7 @@ static void sendData( unsigned char data )
     waitBusy();
     // Write high nibble ::
     // RW = 0, RS = 1, E = 0, DB7-DB4 = Data high nibble
-    PORT_lcd = (data & 0b11110001);
+    PORT_lcd = (data & 0b11110000) | 0b00000001;
     // Set pin E high (tAS > 40 ns gained via calling E_High() )
     E_High();
     // Set pin E low (PWEH > 230 ns is gained)
@@ -215,7 +215,7 @@ void LCDDispString( char *str )
 // Displays the value of integer "i" at "current display position"
 void LCDDispInteger( int i )
 {
-	char buffer[5];
+	char buffer[10];
 	itoa(i, buffer, 10);
 	LCDDispString(buffer);
 }
