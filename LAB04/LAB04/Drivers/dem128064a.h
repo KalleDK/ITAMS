@@ -37,5 +37,4 @@ void DisplayPic(const char *picArray);
 void Draw_Horizontal_Line(unsigned char StartX, unsigned char StartY, unsigned char Length);
 
 
-
 #endif /* DEM128064A_H_ */
