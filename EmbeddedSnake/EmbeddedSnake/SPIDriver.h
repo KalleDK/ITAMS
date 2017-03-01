@@ -85,7 +85,7 @@ public:
 		DDRB |= (1 << PB7)|(1 << PB5)|(1 << PB4);
 
 		// Set SCE high, since it is active low
-		PORTB |= (1 << PB4);
+		//PORTB |= (1 << PB4);
 		
 		// Register setup
 		SPCR |= ((1 << SPE)|(1 << MSTR)|(Order << DORD)|(Mode << CPHA)|(((Prescale << 5) >> 5) << SPR0));
@@ -95,14 +95,14 @@ public:
 	void Write(unsigned char bits)
 	{
 		// Set SCE low
-		PORTB &= ~(1 << PB4);
+		//PORTB &= ~(1 << PB4);
 		
 		// Start transmission and wait
 		SPDR = bits;
 		while(!(SPSR & (1 << SPIF)));
 		
 		// Set SCE high
-		PORTB |= (1 << PB4);
+		//PORTB |= (1 << PB4);
 	}
 
 private:

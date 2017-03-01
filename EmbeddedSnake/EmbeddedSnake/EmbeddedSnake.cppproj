@@ -172,6 +172,9 @@
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="PD8544.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="SPIDriver.h">
       <SubType>compile</SubType>
     </Compile>
