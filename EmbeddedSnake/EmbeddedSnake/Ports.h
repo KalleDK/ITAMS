@@ -14,6 +14,22 @@ struct Port##value { \
 	static volatile uint8_t * const out; \
 	static volatile uint8_t * const in; \
 	static volatile uint8_t * const ddr; \
+	\
+	static void set() { \
+		*out = 0xFF; \
+	} \
+	\
+	static void clear() { \
+		*out = 0x00; \
+	} \
+	\
+	static void set_output() { \
+		*ddr = 0xFF; \
+	} \
+	\
+	static void set_input() { \
+		*ddr = 0x00; \
+	} \
 }; \
 \
 volatile uint8_t * const Port##value::out = &PORT##value; \

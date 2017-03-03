@@ -24,7 +24,7 @@ int main(void)
 	//SPCR = 0b01010000; // 0b010111xx could maybe work
 	//SPSR = 0;
 	SnakeController controller;
-	DDRC = 0xFF;
+	Leds::set_output();
 	//
 	//_delay_ms(10);
 	//
@@ -225,7 +225,7 @@ int main(void)
     {
 		//buttons = controller.read();
 		controller.update();
-		PORTC = ~(controller.A ? 0xFF : 0x00);
+		*Leds::out = ~(controller.A ? 0xFF : 0x00);
 		//_delay_ms(0.1);
 		//_delay_ms(1000);
 		//PORTC = ~PINC;

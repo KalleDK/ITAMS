@@ -18,6 +18,8 @@ using NES_LatchPin = Pin<PortD, 7>;
 
 using SnakeController = NESController<NES_DataPin, NES_LatchPin, NES_ClockPin>;
 
+using Leds = PortC;
+
 
 
 #endif /* SNAKEIO_H_ */
