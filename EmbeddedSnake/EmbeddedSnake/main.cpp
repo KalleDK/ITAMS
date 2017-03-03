@@ -6,11 +6,11 @@
  */ 
 
 #include <avr/io.h>
-#define F_CPU 3686400
-#include <util/delay.h>
-#include <avr/cpufunc.h>
+#include "timing.h"
 #include "SPIDriver.h"
 #include "PD8544.h"
+#include "snakeio.h"
+
 
 int main(void)
 {
@@ -23,6 +23,7 @@ int main(void)
 	//
 	//SPCR = 0b01010000; // 0b010111xx could maybe work
 	//SPSR = 0;
+	SnakeController controller;
 	DDRC = 0xFF;
 	//
 	//_delay_ms(10);
@@ -222,8 +223,12 @@ int main(void)
 	
     while (1) 
     {
-		_delay_ms(1000);
-		PORTC = ~PINC;
+		//buttons = controller.read();
+		controller.update();
+		PORTC = ~(controller.A ? 0xFF : 0x00);
+		//_delay_ms(0.1);
+		//_delay_ms(1000);
+		//PORTC = ~PINC;
         //_delay_ms(500);
 		//spi.Write(0b10000001);
     }
