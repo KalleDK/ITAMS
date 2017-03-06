@@ -212,18 +212,68 @@ int main(void)
 	
 	
     PD8544 display;
-	auto screen = ScreenBuffer<83, 6, PD8544>(&display);
-	for (auto i = 0; i < 498; ++i) {
-		screen.buffer[i] = frame[i];
+	auto screen = ScreenBuffer<84, 48, PD8544>(&display);
+	
+	
+	uint8_t* ptr = &screen.buffer[0];
+	display.SetYAddress(0);
+	display.SetXAddress(0);
+	for(uint8_t t = 0; t < 6; ++t){
+		for(uint8_t i = 0; i < 84; ++i)
+		{
+			*ptr = 0x00;
+			display.Write(*ptr);
+			++ptr;
+		}
 	}
-	//for(uint8_t t = 0; t < 6; ++t){
-		//display.SetYAddress(t);
-		//for(uint8_t i = 0; i < 84; ++i)
-		//{
-			//display.Write(0x00);
-		//}
+	
+	
+	
+	//for (auto i = 0; i < 498; ++i) {
+	//	screen.buffer[i] = frame[i];
 	//}
+
+	
+	
 	//display.Write(0xFF);
+	
+	//screen.draw_square(Point{0,0}, 10, 10);
+		
+		
+/*
+	for (auto i = 0; i < 256; ++i) {
+		screen.buffer[i] = i;
+	}
+	
+	ptr = &screen.buffer[0];
+	display.SetYAddress(0);
+	display.SetXAddress(0);
+	for(uint8_t t = 0; t < 6; ++t){
+		for(uint8_t i = 0; i < 84; ++i)
+		{
+			display.Write(*ptr);
+			++ptr;
+		}
+	}
+	
+	*/
+	
+/*	display.SetYAddress(0);
+	display.SetXAddress(0);
+	for(uint16_t t = 0; t < 84*6; ++t){
+		display.Write(screen.buffer[t]);
+	}	
+*/
+	
+	screen.update();
+	
+	for (auto i = 0; i < 26; ++i) {
+		screen.draw_square(Point{i,0}, 1, i);	
+	}
+	
+	screen.draw_square(Point{74,0}, 10, 10);
+	//screen.draw_square(Point{74,38}, 10, 10);
+	//screen.draw_square(Point{0,38}, 10, 10);
 	screen.update();
 	
     while (1) 

@@ -9,25 +9,34 @@
 #ifndef SCREENBUFFER_H_
 #define SCREENBUFFER_H_
 
+#include <string.h>
+
 struct Point {
 	int8_t x;
 	int8_t y;
 };
 
-template<uint8_t COLUMNS, uint8_t ROWS, typename DISPLAY>
+template<uint8_t WIDTH, uint8_t HEIGHT, typename DISPLAY>
 struct ScreenBuffer 
 {
-	static uint8_t const rows = ROWS;
-	static uint8_t const columns = COLUMNS;
+	static uint8_t const rows = (HEIGHT+7)/8;
+	static uint8_t const columns = WIDTH;
 	static uint16_t const size = columns*rows;
 	
 	uint8_t buffer[size];
 	DISPLAY * const display;
 	
-	ScreenBuffer(DISPLAY *const display) : display(display) {}
+	ScreenBuffer(DISPLAY *const display) : display(display) {
+	}
 	
 	void update() {
+		display->SetYAddress(0);
+		display->SetXAddress(0);
 		display->Write(buffer, size);
+	}
+	
+	void clear() {
+		memset(buffer, size);
 	}
 	
 	bool is_inside (const Point& point, uint8_t width, uint8_t height) {
@@ -56,7 +65,7 @@ struct ScreenBuffer
 	}
 	
 	void draw_square(Point point, uint8_t width, uint8_t height) {
-		if (!is_inside()) {
+		if (!is_inside(point, width, height)) {
 			return;
 		}
 		
@@ -72,7 +81,7 @@ struct ScreenBuffer
 			point.y = 0;
 		}
 		
-		// The squares goes out to the botton, so we make it smaller
+		// The squares goes out to the bottom, so we make it smaller
 		if ((point.y + height) > (rows * 8)) {
 			height = (rows * 8) - point.y;
 		}
@@ -89,16 +98,13 @@ struct ScreenBuffer
 			uint8_t top_height = (8 - middle_height - bottom_height);
 			
 			uint8_t row = point.y / 8;
-			uint8_t mask = ~(0x00) << (point.y % 8);
-			if ((point.y % 8 + height) < 8) {
-				uint8_t high_mask =  ~(0x00) << (point.y % 8 + height);
-				mask &= ~high_mask;
-			}
+			uint8_t mask = ~(0x00) << (bottom_height + top_height);
+			mask = mask >> top_height;
+			uint8_t* ptr = &buffer[rows*point.x+row];
 			
 			for (auto x = point.x; x < point.x + width; ++x) {
-			
-			
-				
+				*ptr |= mask;
+				ptr += rows;
 			}
 			height -= middle_height;
 			point.y += middle_height;
