@@ -182,6 +182,9 @@
     <Compile Include="ports.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="screenbuffer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="snakeio.h">
       <SubType>compile</SubType>
     </Compile>

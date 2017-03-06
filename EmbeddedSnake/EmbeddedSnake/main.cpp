@@ -10,6 +10,7 @@
 #include "SPIDriver.h"
 #include "PD8544.h"
 #include "snakeio.h"
+#include "screenbuffer.h"
 
 
 int main(void)
@@ -209,7 +210,12 @@ int main(void)
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,				
 	};
 	
+	
     PD8544 display;
+	auto screen = ScreenBuffer<83, 6, PD8544>(&display);
+	for (auto i = 0; i < 498; ++i) {
+		screen.buffer[i] = frame[i];
+	}
 	//for(uint8_t t = 0; t < 6; ++t){
 		//display.SetYAddress(t);
 		//for(uint8_t i = 0; i < 84; ++i)
@@ -218,8 +224,7 @@ int main(void)
 		//}
 	//}
 	//display.Write(0xFF);
-	
-	display.Write(frame, 498);
+	screen.update();
 	
     while (1) 
     {
