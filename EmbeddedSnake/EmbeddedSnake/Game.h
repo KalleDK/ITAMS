@@ -323,7 +323,7 @@ class Game
 		
 		snake_.direction = direction;
 		
-		Field* field = area_->get_neighbour(snake_.head, direction);
+		Field* field = area_->get_neighbour(snake_.head, snake_.direction);
 		
 		switch(field->get_id()) {
 			case(type_id::Border) : move_snake_into_border(field); break;
