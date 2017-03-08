@@ -19,7 +19,9 @@ enum class type_id : uint8_t
 enum class game_state : uint8_t
 {
 	Idle     = 0,
-	Playing  = 1
+	Playing  = 1,
+	GameOver = 2,
+	Win      = 3
 };
 
 enum class fruit_value : uint8_t
@@ -163,6 +165,19 @@ class Game
 	
 	void clear_area() {
 		buffer_->clear();
+	}
+	
+	void draw_idle_menu() {
+		buffer_->draw_square_with_border(Point{14,14}, 40, 19, 1);
+		
+		buffer_->set_data(19, 2, 0b00011110);
+		buffer_->set_data(18, 2, 0b00101000);
+		buffer_->set_data(17, 2, 0b00101000);
+		buffer_->set_data(16, 2, 0b00011110);
+	}
+	
+	void draw_playing_area() {
+		
 	}
 	
 	void draw_fruit(Field* field)
@@ -383,17 +398,35 @@ class Game
 		switch(state_) {
 			case(game_state::Idle) : idle_tick(); break;
 			case(game_state::Playing) : playing_tick(); break;
+			default: break;
 		}
+	}
+	
+	void goto_reset() {
+		reset_game();
+		goto_playing();
+	}
+	
+	void goto_playing() {
+		state_ = game_state::Playing;
+		draw_playing_area();
+		update_screen();
+	}
+	
+	void goto_idle() {
+		state_ = game_state::Idle;
+		draw_idle_menu();
+		update_screen();
 	}
 	
 	void idle_tick() {
 		controller_->update();
 		if (controller_->A) {
-			state_ = game_state::Playing;
+			goto_playing();
 			return;
 		}
 		if (controller_->Select) {
-			reset_game();
+			goto_reset();
 			return;
 		}
 	}
@@ -403,12 +436,12 @@ class Game
 		controller_->update();
 		
 		if (controller_->Start) {
-			state_ = game_state::Idle;
+			goto_idle();
 			return;
 		}
 		
 		if (controller_->Select) {
-			reset_game();
+			goto_reset();
 			return;
 		}
 		

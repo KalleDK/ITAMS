@@ -75,6 +75,10 @@ struct ScreenBuffer
 		return true;
 	}
 	
+	void set_data(const uint8_t& column, const uint8_t& row, const uint8_t& data) {
+		*(&buffer[0] + (column * rows) + row) = data;
+	}
+	
 	void draw_square(Point point, uint8_t width, uint8_t height) {
 		if (!is_inside(point, width, height)) {
 			return;
@@ -194,6 +198,11 @@ struct ScreenBuffer
 		draw_square(point, thickness, height);
 		draw_square(Point{point.x, point.y+height-thickness}, width, thickness);
 		draw_square(Point{point.x+width-thickness, point.y}, thickness, height);
+	}
+	
+	void draw_square_with_border(Point point, uint8_t width, uint8_t height, uint8_t thickness) {
+		clear_square(point, width, height);
+		draw_border(point, width, height, thickness);
 	}
 };
 
