@@ -1,0 +1,77 @@
+% Margins
+\setulmarginsandblock{35mm}{30mm}{*}
+\setlrmarginsandblock{25mm}{25mm}{*}
+\setheadfoot{2\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{5mm}{*}
+\checkandfixthelayout
+
+% Pagestyle
+\makepagestyle{report}
+\makeevenhead{report}{}{}{}
+\makeoddhead{report}{}{}{\small\rightmark{} | \textbf{\thepage{}\vspace{7pt}}}
+\makeevenfoot{report}{}{}{}
+\makeoddfoot{report}{}{}{}
+
+\makepsmarks{report}{
+\createmark{chapter}{both}{shownumber}{}{. \ }
+\createmark{section}{both}{shownumber}{}{. \ }
+\createmark{subsection}{both}{shownumber}{}{. \ }
+\createplainmark{toc}{both}{\contentsname}
+\createplainmark{lof}{both}{\listfigurename}
+\createplainmark{lot}{both}{\listtablename}
+\createplainmark{bib}{both}{\bibname}
+\createplainmark{index}{both}{\indexname}
+\createplainmark{glossary}{both}{\glossaryname}}
+
+\aliaspagestyle{part}{report}
+\aliaspagestyle{chapter}{report}
+
+% Chapterstyle
+\chapterstyle{article}
+\setsecnumdepth{subsection}
+\setcounter{tocdepth}{2}
+
+% Floats
+\setfloatlocations{figure}{H}
+\setfloatlocations{table}{H}
+\setlength{\textfloatsep}{2pt}
+\setlength{\floatsep}{2pt}
+\setlength{\intextsep}{2pt}
+
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+
+% Spacing
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+\setlength{\abovedisplayskip}{6pt}
+
+% Lists
+\firmlists
+
+% Tables
+\setlength{\extrarowheight}{4pt}
+\keepXColumns
+
+% Symbols
+\chardef\_=`_
+
+% Colors
+\definecolor{pantone}{RGB}{0,61,133}
+
+% Chapters
+%\def\clearforchapter{}
+
+% Captions
+\captionnamefont{\small}
+\captiontitlefont{\small}
+
+% Media folders
+\graphicspath{{media/images/}}
+
+% Bibliography
+\addbibresource{bibliography.bib}
+\AtBeginBibliography{\raggedright}
+
+% csquote
+\MakeOuterQuote{"}

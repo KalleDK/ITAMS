@@ -1,0 +1,27 @@
+\newlist{compactenum}{enumerate}{1}
+\setlist[compactenum]{label=\arabic*.,leftmargin=*,topsep=0ex,
+    parsep=0pt,after=\vspace{-0.6\baselineskip},before=\vspace{-0.75\baselineskip}}
+    
+\newcommand{\uc}[5]{%
+\vspace{-0.5\baselineskip}
+\begin{center}%
+\begin{minipage}{\textwidth}%
+\raggedright
+\begin{tabularx}{0.9\textwidth}{|>{\bfseries}l|X|}
+\hline\endfirsthead%
+\hline\endfoot%
+\hline\endhead%
+\hline\endlastfoot%
+Title           &#1\\%
+\hline%
+Actor(s)        &#2\\%
+\hline%
+Precondition    &#3\\%
+\hline%
+Postcondition   &#4\\%
+\hline%
+Main scenario   &{\raggedright\begin{compactenum}#5\end{compactenum}}\\%
+\hline%
+\end{tabularx}%
+\end{minipage}%
+\end{center}}

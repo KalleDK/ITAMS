@@ -1,0 +1,13 @@
+\NewEnviron{changelog}%
+{%
+\newcommand{\entry}[3]{ ##1 &##2 &##3.\\ }%
+\textbf{Changelog}
+\begin{tabularx}{0.9\textwidth}{|p{50pt}|p{35pt}|X|}
+\hline\endfirsthead%
+\hline\endfoot%
+\hline\endhead%
+\hline\endlastfoot%
+\textbf{Date} &\textbf{Author} &\textbf{Change(s)}\\\hline%
+\BODY%
+\end{tabularx}%
+}%
