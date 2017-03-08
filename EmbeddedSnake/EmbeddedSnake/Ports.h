@@ -9,6 +9,8 @@
 #ifndef PORTS_H_
 #define PORTS_H_
 
+#include <avr/io.h>
+
 #define PortGenerator(value) \
 struct Port##value { \
 	static volatile uint8_t * const out; \
