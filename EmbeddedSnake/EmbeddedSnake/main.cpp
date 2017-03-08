@@ -78,17 +78,13 @@ int main(void)
 	
 	Area<28, 16> area;
 	
-	Game<ScreenBuffer<84, 48, PD8544>, Area<28, 16>> game(&screen, &area, &controller);
+	Game<ScreenBuffer<84, 48, PD8544>, Area<28, 16>, 100> game(&screen, &area, &controller);
 
 	
     while (1) 
     {
-		_delay_ms(100);
-		controller.update();
-		*Leds::out = ~(controller.A ? 0xFF : 0x00);
-		//game.GameTick(&controller);
 		game.tick();
-		
+		_delay_ms(1);
     }
 }
 

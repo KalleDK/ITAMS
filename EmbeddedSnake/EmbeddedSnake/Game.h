@@ -148,7 +148,7 @@ class Area {
 	
 };
 
-template<typename BUFFER, typename AREA>
+template<typename BUFFER, typename AREA, uint8_t TICK_DIVIDER>
 class Game
 {
 	public:
@@ -302,7 +302,8 @@ class Game
 		
 		update_screen();
 		
-		state_ = game_state::Idle;
+		tick_ = 0;
+		state_ = game_state::Playing;
 	}
 	
 	
@@ -387,12 +388,18 @@ class Game
 	
 	void idle_tick() {
 		controller_->update();
-		if (controller_->Start) {
+		if (controller_->A) {
 			state_ = game_state::Playing;
+			return;
+		}
+		if (controller_->Select) {
+			reset_game();
+			return;
 		}
 	}
 	
 	void playing_tick() {
+		
 		controller_->update();
 		
 		if (controller_->Start) {
@@ -405,6 +412,12 @@ class Game
 			return;
 		}
 		
+		if (tick_ < TICK_DIVIDER) {
+			++tick_;
+			return;
+		}
+		
+		tick_ = 0;
 		move_snake(controller_->Direction);
 		update_screen();
 	}
@@ -414,6 +427,7 @@ class Game
 	BUFFER* buffer_;
 	AREA* area_;
 	SnakeController* controller_;
+	uint8_t tick_;
 	
 	Snake snake_;
 	Field* fruit_;
