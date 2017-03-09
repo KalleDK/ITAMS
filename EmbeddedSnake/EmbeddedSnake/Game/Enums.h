@@ -21,6 +21,18 @@ namespace Game {
 		Right = 4
 	};
 	
+	enum class border_value : uint8_t
+	{
+		North = 0,
+		South = 1,
+		West = 2,
+		East = 3,
+		NorthEast = 4,
+		NorthWest = 5,
+		SouthEast = 6,
+		SouthWest = 7
+	};
+	
 	enum class type_id : uint8_t
 	{
 		None		= 0,
@@ -36,6 +48,13 @@ namespace Game {
 		Playing  = 1,
 		GameOver = 2,
 		Win      = 3
+	};
+	
+	enum class player_state : uint8_t
+	{
+		Playing     = 0,
+		Lost        = 1,
+		Won         = 2
 	};
 
 	enum class fruit_value : uint8_t
