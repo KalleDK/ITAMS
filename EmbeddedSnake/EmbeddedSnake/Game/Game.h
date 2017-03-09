@@ -51,6 +51,7 @@ namespace Game {
 			tick = 0;
 			free_spaces = ((area->width - 2) * (area->height - 2)) - 1;
 			player = player_state::Playing;
+			score = 0;
 		}
 		
 		player_state get_player_state() {
@@ -80,12 +81,12 @@ namespace Game {
 		}
 		
 		void show_win_menu() {
-			screen->draw_win_menu(score);
+			screen->draw_win_menu(get_player_score());
 			refresh_screen();
 		}
 		
 		void show_game_over_menu() {
-			screen->draw_game_over_menu(score);
+			screen->draw_game_over_menu(get_player_score());
 			refresh_screen();
 		}
 		
@@ -317,8 +318,8 @@ namespace Game {
 		
 		void move_snake_into_fruit(field_type_ptr field) {
 			
-			++snake.grow;
-			++score;
+			snake.grow += static_cast<uint8_t>(field->get_fruit());
+			score      += static_cast<uint8_t>(field->get_fruit()) ;
 			
 			move_snake_into_none(field);
 			

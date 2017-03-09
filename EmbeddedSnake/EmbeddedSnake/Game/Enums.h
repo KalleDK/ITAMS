@@ -14,19 +14,19 @@ namespace Game {
 	
 	enum Direction : uint8_t
 	{
-		None = 0,
-		Up = 1,
-		Down = 2,
-		Left = 3,
+		None  = 0,
+		Up    = 1,
+		Down  = 2,
+		Left  = 3,
 		Right = 4
 	};
 	
 	enum class border_value : uint8_t
 	{
-		North = 0,
-		South = 1,
-		West = 2,
-		East = 3,
+		North     = 0,
+		South     = 1,
+		West      = 2,
+		East      = 3,
 		NorthEast = 4,
 		NorthWest = 5,
 		SouthEast = 6,
@@ -67,8 +67,8 @@ namespace Game {
 
 	enum class fruit_value : uint8_t
 	{
-		Banana		= 0,
-		Apple    	= 1,
+		Banana		= 1,
+		Apple    	= 2,
 	};
 
 	using snake_value = Direction;

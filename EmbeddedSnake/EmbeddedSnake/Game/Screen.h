@@ -324,9 +324,17 @@ namespace Game {
 		
 		template<typename T>
 		void draw_game_over_menu(T score) {
-			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*8, 12, 1);
+			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*8, 24, 1);
 			
 			WriteText(6,1, "YOU DIED");
+			
+			uint8_t i = 0;
+			do 
+			{
+				WriteChar(30 - (8*i), 2, (score % 10) + '0');
+				score = score / 10;
+			} while (score > 0);
+			
 
 		}
 		
@@ -391,6 +399,17 @@ namespace Game {
 		}
 		
 		private:
+		void WriteChar(const uint8_t& startCol, const uint8_t& startRow, const char letter){
+
+				uint8_t place = ((letter - '0')*5)+4;
+				buffer_->set_data(startCol , startRow, textEncodeding[place]);
+				buffer_->set_data(startCol + 1, startRow, textEncodeding[place - 1]);
+				buffer_->set_data(startCol + 2, startRow, textEncodeding[place - 2]);
+				buffer_->set_data(startCol + 3, startRow, textEncodeding[place - 3]);
+				buffer_->set_data(startCol + 4, startRow, textEncodeding[place - 4]);
+	
+		}
+		
 		void WriteText(const uint8_t& startCol, const uint8_t& startRow, const char* letters){
 			uint8_t index = 0;
 			while (*letters != '\0')
