@@ -170,36 +170,59 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Game.h">
+    <Compile Include="Game\Area.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Game\Enums.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Game\Field.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Game\Game.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Game\Snake.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="nescontroller.h">
+    <Compile Include="NES\Enums.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="PD8544.h">
+    <Compile Include="NES\Controller.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="PD8544\Driver.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="ports.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="screenbuffer.h">
+    <Compile Include="Screen\Buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Screen\Point.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="snakeio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="SPIDriver.h">
+    <Compile Include="SPI\Driver.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="TC4021.h">
+    <Compile Include="TC4021\Driver.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timing.h">
-      <SubType>compile</SubType>
-    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NES" />
+    <Folder Include="Game" />
+    <Folder Include="Screen" />
+    <Folder Include="TC4021" />
+    <Folder Include="PD8544" />
+    <Folder Include="SPI" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

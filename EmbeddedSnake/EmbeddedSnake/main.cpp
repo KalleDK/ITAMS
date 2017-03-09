@@ -5,27 +5,29 @@
  * Author : KasperSK
  */ 
 
-#include <avr/io.h>
-#include "timing.h"
-#include "SPIDriver.h"
-#include "PD8544.h"
+#define F_CPU 3686400
+#include <util/delay.h>
+
+#include "Game/Game.h"
+#include "Game/Area.h"
+#include "Game/Field.h"
+#include "Screen/Buffer.h"
+
 #include "snakeio.h"
-#include "screenbuffer.h"
-#include "Game.h"
 
-static SnakeController controller;
-static Area<21, 12> area;
-static PD8544 display;
-static ScreenBuffer<84, 48, PD8544> screen(&display);
-static Game<ScreenBuffer<84, 48, PD8544>, Area<21, 12>, 100> game(&screen, &area, &controller);
+using AREA_T = Game::Area<Game::Field, 22, 13>;
+using SCREENBUFFER_T = Screen::Buffer<84, 48, DISPLAY_T>;
+using GAME_T = Game::Game<SCREENBUFFER_T, AREA_T, CONTROLLER_T, 100>;
 
+static CONTROLLER_T controller;
+static AREA_T area;
+static DISPLAY_T display;
+static SCREENBUFFER_T screen(&display);
+static GAME_T game(&screen, &area, &controller);
 
 
 int main(void)
 {
-  
-	Leds::set_output();
-
 	screen.clear();
 	screen.update();	
 	
