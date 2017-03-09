@@ -13,31 +13,28 @@
 #include "Game/Field.h"
 #include "Screen/Buffer.h"
 #include "Game/Screen.h"
+#include "Game/Program.h"
 
 #include "snakeio.h"
 
-using AREA_T = Game::Area<Game::Field, 22, 13>;
-using SCREENBUFFER_T = Screen::Buffer<84, 48, DISPLAY_T>;
+using AREA_T   = Game::Area<Game::Field, 22, 13>;
 using SCREEN_T = Game::Screen<SCREENBUFFER_T>;
-using GAME_T = Game::Game<SCREEN_T, AREA_T, CONTROLLER_T, 100>;
+using GAME_T   = Game::Game<SCREEN_T, AREA_T, 100>;
 
+using PROGRAM_T = Game::Program<GAME_T, CONTROLLER_T, SCREEN_T>;
 
-static CONTROLLER_T controller;
-static AREA_T area;
-static DISPLAY_T display;
+static CONTROLLER_T   controller;
+static DISPLAY_T      display;
 static SCREENBUFFER_T screenbuffer(&display);
-static SCREEN_T screen(&screenbuffer);
-static GAME_T game(&screen, &area, &controller);
-
-
+static PROGRAM_T      program(&controller, &screenbuffer);
 
 int main(void)
 {
-	game.init();
+	program.init();
 	
     while (1) 
     {
-		game.tick();
+		program.tick();
 		_delay_ms(1);
     }
 }

@@ -50,6 +50,14 @@ namespace Game {
 		Win      = 3
 	};
 	
+	enum class program_state : uint8_t
+	{
+		Idle     = 0,
+		Playing  = 1,
+		GameOver = 2,
+		Win      = 3
+	};
+	
 	enum class player_state : uint8_t
 	{
 		Playing     = 0,

@@ -185,6 +185,9 @@
     <Compile Include="Game\Point.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Game\Program.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Game\Screen.h">
       <SubType>compile</SubType>
     </Compile>

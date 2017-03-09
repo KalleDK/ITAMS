@@ -9,7 +9,7 @@
 
 namespace Game {
 
-	template<typename SCREEN, typename AREA, typename CONTROLLER, uint8_t TICK_DIVIDER>
+	template<typename SCREEN, typename AREA, uint8_t TICK_DIVIDER>
 	class Game
 	{
 		public:
@@ -19,9 +19,6 @@ namespace Game {
 		
 		using area_type     = AREA;
 		using area_type_ptr = area_type*;
-		
-		using controller_type     = CONTROLLER;
-		using controller_type_ptr = controller_type*;
 		
 		using field_type     = typename area_type::value_type;
 		using field_type_ptr = typename area_type::value_type_ptr;
@@ -33,47 +30,131 @@ namespace Game {
 		
 		using size_type = typename area_type::size_type;
 		
-		Game(screen_type_ptr screen, area_type_ptr area, controller_type_ptr controller) : screen_(screen), area_(area), controller_(controller)
+		area_type area_;
+		
+		Game(screen_type_ptr screen) : screen(screen), area(&area_) 
 		{
 		}
 		
+		
 		void init() {
-			screen_->init();
-			goto_reset();
+			screen->init();
 		}
 		
-		void refresh_screen() {
-			screen_->update();
+		void reset() {
+			
+			add_area();
+			add_border();
+			add_fruit(5, 4, fruit_value::Apple);
+			add_snake(9, 5, Direction::Right, 3);
+			
+			tick = 0;
+			free_spaces = ((area->width - 2) * (area->height - 2)) - 1;
+			player = player_state::Playing;
+		}
+		
+		player_state get_player_state() {
+			return player;
+		}
+		
+		uint8_t get_player_score() {
+			return score;
 		}
 		
 		void show_playing_area() {
-			for (field_type_ptr itr = area_->begin(); itr != area_->end(); ++itr) {
+			for (field_type_ptr itr = area->begin(); itr != area->end(); ++itr) {
 				auto id = itr->get_id();
-				auto point = area_->get_point(itr);
+				auto point = area->get_point(itr);
 				switch(id){
-					case(type_id::Fruit)  : screen_->draw_fruit(point);
+					case(type_id::Fruit)  : screen->draw_fruit(point);
 										    break;
-					case(type_id::Snake)  : screen_->draw_snake(point, itr->get_snake());
+					case(type_id::Snake)  : screen->draw_snake(point, itr->get_snake());
 										    break;
-					case(type_id::None)   : screen_->draw_none(point);
+					case(type_id::None)   : screen->draw_none(point);
 											break;
-					case(type_id::Border) : screen_->draw_border(point, itr->get_border());
+					case(type_id::Border) : screen->draw_border(point, itr->get_border());
 											break;
 				}
 			}
+			refresh_screen();
 		}
 		
 		void show_win_menu() {
-			screen_->draw_win_menu(score_);
+			screen->draw_win_menu(score);
+			refresh_screen();
 		}
 		
 		void show_game_over_menu() {
-			screen_->draw_game_over_menu(score_);
+			screen->draw_game_over_menu(score);
+			refresh_screen();
 		}
 		
 		void show_idle_menu() {
-			screen_->draw_idle_menu();
+			screen->draw_idle_menu();
+			refresh_screen();
 		}
+		
+		
+		
+		void pushed_left() {
+			if (skip()) {return;}
+			move_snake(Direction::Left);
+			refresh_screen();
+		}
+		
+		void pushed_right() {
+			if (skip()) {return;}
+			move_snake(Direction::Right);
+			refresh_screen();
+		}
+		
+		void pushed_up() {
+			if (skip()) {return;}
+			move_snake(Direction::Up);
+			refresh_screen();
+		}
+		
+		void pushed_down() {
+			if (skip()) {return;}
+			move_snake(Direction::Down);
+			refresh_screen();
+		}
+		
+		void pushed_a() {
+			if (skip()) {return;}
+			move_snake(Direction::None);
+			refresh_screen();
+		}
+		
+		void pushed_b() {
+			if (skip()) {return;}
+			move_snake(Direction::None);
+			refresh_screen();
+		}
+		
+		void pushed_none() {
+			if (skip()) {return;}
+			move_snake(Direction::None);
+			refresh_screen();
+		}
+		
+		
+	private:
+		
+		bool skip() {
+			if (tick < TICK_DIVIDER) {
+				++tick;
+				return true;
+				} else {
+				tick = 0;
+				return false;
+			}
+		}
+		
+		void refresh_screen() {
+			screen->update();
+		}
+		
 		
 		// Setting and updating fields -> these should call their own drawing functions if needed
 		
@@ -81,28 +162,28 @@ namespace Game {
 			
 			field->set_none();
 			
-			screen_->draw_none(area_->get_point(field));
+			screen->draw_none(area->get_point(field));
 		}
 		
 		void set_border(field_type_ptr field, border_value direction) {
 			
 			field->set_border(direction);
 			
-			screen_->draw_border(area_->get_point(field), direction);
+			screen->draw_border(area->get_point(field), direction);
 		}
 		
-		void set_snake(field_type_ptr field, Direction direction) {
+		void set_snake(field_type_ptr field, snake_value direction) {
 			
 			field->set_snake(direction);
 			
-			screen_->draw_snake(area_->get_point(field), direction);
+			screen->draw_snake(area->get_point(field), direction);
 		}
 		
 		void set_fruit(field_type_ptr field, fruit_value value) {
 			
 			field->set_fruit(value);
 			
-			screen_->draw_fruit(area_->get_point(field));
+			screen->draw_fruit(area->get_point(field));
 		}
 		
 		
@@ -111,61 +192,61 @@ namespace Game {
 		
 		void add_area() {
 			
-			for (field_type_ptr itr = area_->begin(); itr != area_->end(); ++itr) {
+			for (field_type_ptr itr = area->begin(); itr != area->end(); ++itr) {
 				itr->set_none();
 			}
 			
-			screen_->clear();
+			screen->clear();
 			
 		}
 		
 		void add_border() {
 			
-			for (uint8_t x = 1; x < area_->width - 1; ++x) {
-				set_border(area_->get_field(x, 0), border_value::North);
-				set_border(area_->get_field(x, area_->height - 1), border_value::South);
+			for (uint8_t x = 1; x < area->width - 1; ++x) {
+				set_border(area->get_field(x, 0), border_value::North);
+				set_border(area->get_field(x, area->height - 1), border_value::South);
 			}
 			
-			for (uint8_t y = 1; y < area_->height - 1; ++y) {
-				set_border(area_->get_field(0, y), border_value::West);
-				set_border(area_->get_field(area_->width - 1, y), border_value::East);
+			for (uint8_t y = 1; y < area->height - 1; ++y) {
+				set_border(area->get_field(0, y), border_value::West);
+				set_border(area->get_field(area->width - 1, y), border_value::East);
 			}
 			
-			set_border(area_->get_field(0                , 0                 ), border_value::NorthWest);
-			set_border(area_->get_field(area_->width - 1 , 0                 ), border_value::NorthEast);
-			set_border(area_->get_field(0                , area_->height - 1 ), border_value::SouthWest);
-			set_border(area_->get_field(area_->width - 1 , area_->height - 1 ), border_value::SouthEast);
+			set_border(area->get_field(0                , 0                 ), border_value::NorthWest);
+			set_border(area->get_field(area->width - 1 , 0                 ), border_value::NorthEast);
+			set_border(area->get_field(0                , area->height - 1 ), border_value::SouthWest);
+			set_border(area->get_field(area->width - 1 , area->height - 1 ), border_value::SouthEast);
 
 		}
 		
 		void add_fruit(uint8_t x, uint8_t y, fruit_value value) {
 			
-			fruit_ = fruit_type_ptr(area_->get_field(x,y));
+			fruit = fruit_type_ptr(area->get_field(x,y));
 			
-			set_fruit(fruit_, value);
+			set_fruit(fruit, value);
 		}
 		
-		void add_snake(uint8_t x, uint8_t y, Direction direction, size_type size) {
+		void add_snake(uint8_t x, uint8_t y, snake_value direction, size_type size) {
 			
-			snake_ = snake_type(area_->get_field(x,y), direction, size);
+			snake = snake_type(area->get_field(x,y), direction, size);
 			
-			set_snake(snake_.head, Direction::None);
+			set_snake(snake.head, Direction::None);
 		}
 		
 
 		// Snake functions
 
 		void kill_snake() {
-			snake_.is_alive = false;
-			player_ = player_state::Lost;
+			snake.is_alive = false;
+			player = player_state::Lost;
 		};
 
 		void move_snake_tail() {
 			// Move tail
-			field_type_ptr old_tail = snake_.tail;
+			field_type_ptr old_tail = snake.tail;
 			
-			Direction tail_direction = snake_.tail->get_snake();
-			snake_.tail = area_->get_neighbour(snake_.tail, tail_direction);
+			Direction tail_direction = snake.tail->get_snake();
+			snake.tail = area->get_neighbour(snake.tail, tail_direction);
 			
 			set_none(old_tail);
 			
@@ -173,43 +254,29 @@ namespace Game {
 
 		void move_snake_head(field_type_ptr field) {
 			// Update old head with direction
-			set_snake(snake_.head, snake_.direction);
+			set_snake(snake.head, snake.direction);
 			
 			// Create new head
 			set_snake(field, Direction::None);
-			snake_.head = field;
+			snake.head = field;
 		}
 
 
-		// Game functions
-		void reset_game() {
-			
-			add_area();
-			add_border();
-			add_fruit(5, 4, fruit_value::Apple);
-			add_snake(9, 5, Direction::Right, 3);
-			
-			tick_ = 0;
-			free_spaces = ((area_->width - 2) * (area_->height - 2)) - 1;
-			state_ = game_state::Playing;
-			player_ = player_state::Playing;
-		}
-		
 		// Movement
 		
 		void move_snake(Direction direction) {
 			// Continue if none is pressed
-			direction = (direction != Direction::None ? direction : snake_.direction);
+			direction = (direction != Direction::None ? direction : snake.direction);
 			
 			// Reversed direction is not allowed
-			direction = ((direction == Direction::Right) && (snake_.direction == Direction::Left) ? snake_.direction : direction);
-			direction = ((direction == Direction::Left) && (snake_.direction == Direction::Right) ? snake_.direction : direction);
-			direction = ((direction == Direction::Up) && (snake_.direction == Direction::Down) ? snake_.direction : direction);
-			direction = ((direction == Direction::Down) && (snake_.direction == Direction::Up) ? snake_.direction : direction);
+			direction = ((direction == Direction::Right) && (snake.direction == Direction::Left) ? snake.direction : direction);
+			direction = ((direction == Direction::Left) && (snake.direction == Direction::Right) ? snake.direction : direction);
+			direction = ((direction == Direction::Up) && (snake.direction == Direction::Down) ? snake.direction : direction);
+			direction = ((direction == Direction::Down) && (snake.direction == Direction::Up) ? snake.direction : direction);
 			
-			snake_.direction = direction;
+			snake.direction = direction;
 			
-			field_type_ptr field = area_->get_neighbour(snake_.head, snake_.direction);
+			field_type_ptr field = area->get_neighbour(snake.head, snake.direction);
 			
 			switch(field->get_id()) {
 				case(type_id::Border) : move_snake_into_border(field); break;
@@ -225,7 +292,7 @@ namespace Game {
 		}
 		
 		void move_snake_into_snake(field_type_ptr field) {
-			if ((field == snake_.tail) && (snake_.grow == 0) ) {
+			if ((field == snake.tail) && (snake.grow == 0) ) {
 				move_snake_into_none(field);
 				} else {
 				kill_snake();
@@ -234,13 +301,13 @@ namespace Game {
 		
 		void move_snake_into_none(field_type_ptr field) {
 			
-			if (snake_.grow == 0) {
+			if (snake.grow == 0) {
 				move_snake_tail();
 				} else {
-				--snake_.grow;
+				--snake.grow;
 				--free_spaces;
 				if (free_spaces == 0) {
-					player_ = player_state::Won;
+					player = player_state::Won;
 				}
 			}
 			
@@ -250,153 +317,39 @@ namespace Game {
 		
 		void move_snake_into_fruit(field_type_ptr field) {
 			
-			++snake_.grow;
-			++score_;
+			++snake.grow;
+			++score;
 			
 			move_snake_into_none(field);
 			
 			if (free_spaces > 0) {
-				fruit_ = snake_.tail + (snake_.head-area_->begin());
+				fruit = snake.tail + (snake.head-area->begin());
 				do
 				{
-					fruit_ += (area_->width + 1);
-					if (fruit_ >= area_->end()) {
-						fruit_ -= (area_->end() - area_->begin());
+					fruit += (area->width + 1);
+					if (fruit >= area->end()) {
+						fruit -= (area->end() - area->begin());
 					}
-				} while (fruit_->get_id() != type_id::None);
+				} while (fruit->get_id() != type_id::None);
 				
-				set_fruit(fruit_, fruit_value::Banana);
+				set_fruit(fruit, fruit_value::Banana);
 			}
 			
 		}
-		
-		
-		// Ticks
-		
-		void goto_win() {
-			state_ = game_state::Win;
-			show_win_menu();
-			refresh_screen();
-		}
-		
-		void goto_game_over() {
-			state_ = game_state::GameOver;
-			show_game_over_menu();
-			refresh_screen();
-		}
-		
-		void goto_reset() {
-			reset_game();
-			goto_playing();
-		}
-		
-		void goto_playing() {
-			state_ = game_state::Playing;
-			show_playing_area();
-			refresh_screen();
-		}
-		
-		void goto_idle() {
-			state_ = game_state::Idle;
-			show_idle_menu();
-			refresh_screen();
-		}
-		
-		
-		void tick() {
-			switch(state_) {
-				case(game_state::Idle) : idle_tick(); break;
-				case(game_state::Playing) : playing_tick(); break;
-				case(game_state::Win) : win_tick(); break;
-				case(game_state::GameOver) : game_over_tick(); break;
-				default: break;
-			}
-		}
-		
-		void idle_tick() {
-			controller_->update();
-			if (controller_->a) {
-				goto_playing();
-				return;
-			}
-			if (controller_->select) {
-				goto_reset();
-				return;
-			}
-		}
-		
-		void playing_tick() {
-			
-			controller_->update();
-			
-			if (controller_->start) {
-				goto_idle();
-				return;
-			}
-			
-			if (controller_->select) {
-				goto_reset();
-				return;
-			}
-			
-			if (tick_ < TICK_DIVIDER) {
-				++tick_;
-				return;
-			} else {
-				tick_ = 0;	
-			}
-
-			
-			if (controller_->up) {
-				move_snake(Direction::Up);
-			} else if (controller_->down) {
-				move_snake(Direction::Down);
-			} else if (controller_->left) {
-				move_snake(Direction::Left);
-			} else if (controller_->right) {
-				move_snake(Direction::Right);
-			} else {
-				move_snake(Direction::None);
-			}
-			
-			screen_->update();
-			
-			switch(player_) {
-				case(player_state::Won)  : goto_win(); return;
-				case(player_state::Lost) : goto_game_over(); return;
-				default: break;
-			}
-		}
-		
-		void win_tick() {
-			controller_->update();
-			if (controller_->a) {
-				goto_reset();
-				return;
-			}
-		}
-		
-		void game_over_tick() {
-			controller_->update();
-			if (controller_->a) {
-				goto_reset();
-				return;
-			}
-		}
-		
 		
 		
 	private:
-		screen_type_ptr screen_;
-		area_type_ptr area_;
-		controller_type_ptr controller_;
-		snake_type snake_;
-		fruit_type_ptr fruit_;
+	
+		screen_type_ptr screen;
+		area_type_ptr area;
+		snake_type snake;
+		fruit_type_ptr fruit;
 		
-		game_state state_;
-		player_state player_;
-		uint8_t tick_;
-		size_type score_;
+		
+		player_state player;
+			
+		uint8_t tick;
+		size_type score;
 		size_type free_spaces;
 	};
 
