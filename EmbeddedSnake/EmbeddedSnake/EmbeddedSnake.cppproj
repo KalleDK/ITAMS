@@ -182,6 +182,12 @@
     <Compile Include="Game\Game.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Game\Point.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Game\Screen.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Game\Snake.h">
       <SubType>compile</SubType>
     </Compile>

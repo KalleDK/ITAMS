@@ -36,8 +36,12 @@ namespace Game {
 			return static_cast<fruit_value>(get_value());
 		}
 		
-		void set_border() {
-			set(type_id::Border, 0);
+		void set_border(border_value direction) {
+			set(type_id::Border, static_cast<uint8_t>(direction));
+		}
+		
+		border_value get_border() {
+			return static_cast<border_value>(get_value());
 		}
 		
 		void set_none() {

@@ -9,7 +9,7 @@
 #ifndef GAME_AREA_H_
 #define GAME_AREA_H_
 
-#include "../Screen/Point.h"
+#include "Point.h"
 
 namespace Game {
 	
@@ -59,10 +59,10 @@ namespace Game {
 			}
 		}
 		
-		Screen::Point get_coordinate(value_type_ptr field) {
-			auto x = ((field - begin()) % width);
-			auto y = ((field - begin()) / width);
-			return Screen::Point{x * 4 - 2, y * 4 - 2};
+		Point get_point(value_type_ptr field) {
+			uint8_t x = ((field - begin()) % width);
+			uint8_t y = ((field - begin()) / width);
+			return Point{x, y};
 		}
 		
 	};

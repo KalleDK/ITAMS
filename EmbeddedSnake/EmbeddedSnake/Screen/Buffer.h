@@ -19,6 +19,10 @@ namespace Screen {
 	struct Buffer
 	{
 		using point = Point;
+		
+		using point_type     = Point;
+		using point_type_ptr = Point*;
+		
 		static uint8_t const rows = (HEIGHT+7)/8;
 		static uint8_t const columns = WIDTH;
 		static uint16_t const size = columns*rows;
@@ -27,6 +31,11 @@ namespace Screen {
 		DISPLAY * const display;
 		
 		Buffer(DISPLAY *const display) : display(display) {
+		}
+		
+		void init() {
+			clear();
+			update();
 		}
 		
 		void update() {
