@@ -195,8 +195,6 @@ namespace Game {
 			player_ = player_state::Playing;
 		}
 		
-		
-		
 		// Movement
 		
 		void move_snake(Direction direction) {

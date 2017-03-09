@@ -6,8 +6,8 @@
  */ 
 
 
-#ifndef SCREEN_H_
-#define SCREEN_H_
+#ifndef GAME_SCREEN_H_
+#define GAME_SCREEN_H_
 
 #include "Point.h"
 #include "Enums.h"
@@ -145,4 +145,4 @@ namespace Game {
 
 
 
-#endif /* SCREEN_H_ */
+#endif /* GAME_SCREEN_H_ */
