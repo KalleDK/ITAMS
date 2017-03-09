@@ -309,36 +309,25 @@ namespace Game {
 			
 		
 		void draw_idle_menu() {
-			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*6, 10, 1);
+			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*6, 12, 1);
 			
-			WriteText(6,1, "PAUSE\0");
-			//buffer_->set_data(9, 1, 0b00011110);
-			//buffer_->set_data(8, 1, 0b00101000);
-			//buffer_->set_data(7, 1, 0b00101000);
-			//buffer_->set_data(6, 1, 0b00011110);
+			WriteText(6,1, "PAUSE");
 		}
 		
 		template<typename T>
 		void draw_win_menu(T score) {
-			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*7, 10, 1);
+			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*7, 12, 1);
 			
-			WriteText(6,1, "YOU WON\0");
-			
-			buffer_->set_data(9, 1, 0b00011110);
-			buffer_->set_data(8, 1, 0b00101000);
-			buffer_->set_data(7, 1, 0b00101000);
-			buffer_->set_data(6, 1, 0b00011110);
+			WriteText(6,1, "YOU WON");
+
 		}
 		
 		template<typename T>
 		void draw_game_over_menu(T score) {
-			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*8, 10, 1);
+			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*8, 12, 1);
 			
-			WriteText(6,1, "YOU DIED\0");
-			//buffer_->set_data(9, 1, 0b00011110);
-			//buffer_->set_data(8, 1, 0b00101000);
-			//buffer_->set_data(7, 1, 0b00101000);
-			//buffer_->set_data(6, 1, 0b00011110);
+			WriteText(6,1, "YOU DIED");
+
 		}
 		
 		
