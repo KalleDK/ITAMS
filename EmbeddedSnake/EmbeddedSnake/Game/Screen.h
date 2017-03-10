@@ -414,6 +414,12 @@ namespace Game {
 			uint8_t index = 0;
 			while (*letters != '\0')
 			{
+				if (*letters == ' ')
+				{
+					letters++;
+					index += 6;
+					continue;
+				}
 				uint8_t place = ((*letters - '0')*5)+4;
 				buffer_->set_data(startCol + index, startRow, textEncodeding[place]);
 				buffer_->set_data(startCol + index + 1, startRow, textEncodeding[place - 1]);

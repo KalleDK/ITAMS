@@ -1,15 +1,2 @@
-\section{System description}
-
-We've identified the Display as a PCD8544. We've also found out that the NES controller uses a CD/TC4021 (8-stage static shift register) to store the state of the controller. Therefore, we'll have write at least two drivers for our system: one to interface the display and one to interface the controller.
-
-We have chosen to describe our system using an Internal Block Diagram (IBD) as seen in Figure~\ref{fig:ibd}. The IBD shows the connections between the blocks.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.9\textwidth, trim={10mm 5mm 5mm 0mm}, clip]{overview/ibd}
-\caption{Internal Block Diagram}
-\label{fig:ibd}
-\end{figure}
-
 \input{mainmatter/architecture/system_description/display}
 \input{mainmatter/architecture/system_description/controller}
