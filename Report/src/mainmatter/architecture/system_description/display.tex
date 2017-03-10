@@ -1,19 +1,58 @@
 \section{Display}
 
-We've chosen to interface with the display using SPI...
+In this section we describe how we interface with the display that is used in this project. 
 
 \subsection{Display - PD8544}
 
-Since we are using the nokia 3310 display in our project we needed to write a driver to interface with the chip on the display.
-The chip on the display is a PD8544, and we have used to datasheet to figure out how to interface with it. 
+We are using the nokia 3310 display in our project and need to write a driver to interface with the chip on that display.
+The chip on the display is a PD8544, and we have used to datasheet\cite{philips:pcd8544} to figure out how to interface with it. 
+
+The PD8544 has eigth connections available to us:
+\begin{itemize}
+\item Reset
+\item Clock enable
+\item Data/control
+\item Data in
+\item Clock
+\item Vcc
+\item Back light
+\item Ground
+\end{itemize}
+
+We will need to connect to most of these and then interface them correctly in order to use the display.
 
 The PD8544 uses a serial interface for both control and data, to select whether we are sending control commands or data to the display,
-there is a input that needs to be high for data and low for commands.
+the Data/control input is used it needs to be high for data and low for commands.
 
 Since we have a serial interface there is also a serial clock pin, a serial data in pin and a serial clock enable pin.
-There is also a pin that is used to reset the display and put it into a known state.
+
+There is also a pin that is used to reset the display and put it into a known state. The rest of the pins are power to the display and the backlight.
 
 Since the chips interface is serial we decided to use the MEGA32's Serial Pheriphial interface, we are only able to send data to the display 
-and cannot receive so we only have use for the master out slave in pin, and not the master ind slave out pin. 
+and cannot receive so we only have use for the master out slave in pin, and not the master ind slave out pin.
+
+This display also runs on 3.3V and since our microprocessor runs on 5V we need to deal with this. We could either make a little circuit to convert the 
+logic level from 5V to 3.3V or just ignore it since the display is able to handle a supply of upto 7V. But it will run best at 3.3V.
 
 To start the display driver off we decided to write a SPI driver to handle the setup of clock rate, SPI mode and endianess.
+
+\subsubsection{SPI driver}
+The SPI interface of the ATMEGA32 is pretty straight forward the is a few parameters we need to keep in mind:
+
+\begin{itemize}
+\item SPI mode
+\item Clock frequency
+\item Endianess
+\end{itemize}
+
+There are four different SPI modes. We need to match the one that our display uses but since this is an SPI driver we should support all modes.
+The same goes for the frequency and the endianess. 
+
+\subsubsection{Display driver}
+The display driver is using the SPI driver for writing data to the display, this driver controls the reset and data/control pins and uses them for interfacing
+correctly with the display. 
+
+This driver also implements the different display functions, and makes them available for use by others, 
+such as setting the X and Y address and changeing addressing mode. 
+
+This driver also handles the trivial setup of the screen such that it can be used without further setup.
