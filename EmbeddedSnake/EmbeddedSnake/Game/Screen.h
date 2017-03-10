@@ -414,7 +414,7 @@ namespace Game {
 			uint8_t index = 0;
 			while (*letters != '\0')
 			{
-				if (*letters = ' ');
+				if (*letters == ' ');
 				{
 					letters++;
 					index += 6;
