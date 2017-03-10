@@ -53,7 +53,7 @@ namespace SPI {
 			data = data << 1 | !!bit;
 		}
 		
-		operator uint8_t&() {
+		operator value_type&() {
 			return data;
 		}
 	};
