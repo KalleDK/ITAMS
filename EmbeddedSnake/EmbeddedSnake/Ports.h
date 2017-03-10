@@ -45,16 +45,19 @@ PortGenerator(C)
 PortGenerator(D)
 
 
-template<typename PORT, uint8_t NR>
+template<typename PORT, size_t NR>
 struct Pin {
-	static uint8_t const nr = NR;
-	typedef PORT port;
 	
-	static inline uint8_t read() {
+	using value_type = uint8_t;
+	using port = PORT;
+	
+	static size_t const nr = NR;
+	
+	static inline value_type read() {
 		return !!read_port();
 	}
 	
-	static inline uint8_t read_port() {
+	static inline value_type read_port() {
 		return (~(*port::in)) & (1 << nr);
 	}
 	

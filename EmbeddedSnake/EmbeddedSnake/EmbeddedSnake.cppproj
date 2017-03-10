@@ -221,6 +221,9 @@
     <Compile Include="SPI\Driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="SPI\DriverSoftware.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="TC4021\Driver.h">
       <SubType>compile</SubType>
     </Compile>

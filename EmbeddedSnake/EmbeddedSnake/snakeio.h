@@ -11,10 +11,13 @@
 using Leds = PortC;
 
 #include "TC4021/Driver.h"
-using TC4021_DataPin = Pin<PortD, PD0>;
-using TC4021_ClockPin = Pin<PortD, PD1>;
-using TC4021_LatchPin = Pin<PortD, PD7>;
-using TC4021_T = TC4021::Driver<uint8_t, 8, TC4021_DataPin, TC4021_LatchPin, TC4021_ClockPin>;
+using NES_Data  = Pin<PortD, PD0>;
+using NES_Clock = Pin<PortD, PD1>;
+using NES_Latch = Pin<PortD, PD7>;
+
+using NES_Pins = SPI::Pins<NES_Data, NES_Latch, NES_Clock>;
+
+using TC4021_T = TC4021::Driver<TC4021::Buffer<8>, NES_Pins>;
 
 #include "NES/Controller.h"
 using CONTROLLER_T = NES::Controller<TC4021_T>;
