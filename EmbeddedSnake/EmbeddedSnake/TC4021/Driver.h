@@ -82,7 +82,7 @@ namespace TC4021 {
 				buffer.add_bit(DATA::read());
 				
 				// Go to next bit
-				clock();
+				pulse();
 			}
 			
 			// Read the last bit
@@ -119,7 +119,7 @@ namespace TC4021 {
 			_delay_us(T_WH / 1000);
 		}
 		
-		inline void clock() {
+		inline void pulse() {
 			CLOCK::set();
 			_delay_us(T_H / 1000);
 			CLOCK::clear();
