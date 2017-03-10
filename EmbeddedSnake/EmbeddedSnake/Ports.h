@@ -50,27 +50,27 @@ struct Pin {
 	static uint8_t const nr = NR;
 	typedef PORT port;
 	
-	static uint8_t read() {
+	static inline uint8_t read() {
 		return !!read_port();
 	}
 	
-	static uint8_t read_port() {
+	static inline uint8_t read_port() {
 		return (~(*port::in)) & (1 << nr);
 	}
 	
-	static void set() {
+	static inline void set() {
 		*port::out |= 1 << nr;
 	}
 	
-	static void clear() {
+	static inline void clear() {
 		*port::out &= ~(1 << nr);
 	}
 	
-	static void set_output() {
+	static inline void set_output() {
 		*port::ddr |= 1 << nr;
 	}
 
-	static void set_input() {
+	static inline void set_input() {
 		*port::ddr &= ~(1 << nr);
 	}
 		

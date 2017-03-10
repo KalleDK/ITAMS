@@ -1,9 +1,9 @@
 /*
- * TC4201.c
- *
- * Created: 3/3/2017 10:12:23 AM
- *  Author: live
- */ 
+* TC4201.c
+*
+* Created: 3/3/2017 10:12:23 AM
+*  Author: live
+*/
 
 #ifndef __TC4021_H__
 #define __TC4021_H__
@@ -30,51 +30,102 @@
 //
 
 namespace TC4021 {
-	template <typename T, uint8_t REGISTER_SIZE, typename DATA, typename LATCH, typename CLOCK>
-	struct Driver {
-
-		public:
-
-		static const uint8_t T_rem = 45;
-		static const uint8_t T_H = 35 / 30;
-		static const uint8_t T_SU = 25;
+	
+	template <typename T>
+	struct Buffer {
+		T data;
 		
-		Driver() {
-			LATCH::set_output();
-			LATCH::set();
-			
-			CLOCK::set_output();
-			CLOCK::clear();
-			
-			DATA::set_input();
+		Buffer() {
+			data = 0u;
 		}
 		
-		T read() {
-			T buffer;
+		inline void add_bit(uint8_t bit) {
+			data = data << 1 | !!bit;
+		}
+		
+		operator uint8_t&() {
+			return data;
+		}
+	};
+	
+	template <typename T, size_t REGISTER_SIZE, typename DATA, typename LATCH, typename CLOCK>
+	class Driver {
+		
+		static const size_t size = REGISTER_SIZE;
+		
+		// Variables
+		public:
+		static const uint8_t T_rem = 45; // Min. Removal Time - From LATCH is lowered until CLOCK may be risen
+		static const uint8_t T_WH  = 90; // Min. Pulse Width  - From LATCH is raised until LATCH may be lowered
+		static const uint8_t T_H   = 35; // Min. Hold Time    - From CLOCK is raised until DATA can be read
+		static const uint8_t T_SU  = 25; // Min. Set-up Time  - Setup time for next DATA
+		protected:
+		private:
+		
+		// Methods
+		public:
+		Driver() {
+			init();
+		}
+		
+		inline T read() {
 			
-			// Start Transmission:
-			LATCH::clear();
+			Buffer<T> buffer;
 			
-			_delay_us(T_rem / 1000);
+			// Start the transmission
+			start_transmission();
 			
-			// Read the first bit
-			buffer = DATA::read();
-			for (auto i = 0; i < REGISTER_SIZE-1; ++i)
+			// Read all but 1 bit (as you don't need to clock for the first)
+			for (auto i = 0u; i < size-1; ++i)
 			{
-				CLOCK::set();
-				_delay_us(T_H);
-
-				CLOCK::clear();
-				// Read the rest of the bits one by one
-				buffer = buffer << 1 | DATA::read();
-				_delay_us(T_SU / 1000);
+				// Read the bit
+				buffer.add_bit(DATA::read());
+				
+				// Go to next bit
+				clock();
 			}
 			
+			// Read the last bit
+			buffer.add_bit(DATA::read());
+			
 			// End Transmission
-			LATCH::set();
+			end_transmission();
+			
 			return buffer;
 		}
 		
+		private:
+		
+		inline void init() {
+			// Setting LATCH pin to OUTPUT and HIGH
+			LATCH::set_output();
+			LATCH::set();
+			
+			// Setting CLOCK pin to OUTPUT and LOW
+			CLOCK::set_output();
+			CLOCK::clear();
+			
+			// Setting DATA pin to INPUT
+			DATA::set_input();
+		}
+		
+		inline void start_transmission() {
+			LATCH::clear();
+			_delay_us(T_rem / 1000);
+		}
+		
+		inline void end_transmission() {
+			LATCH::set();
+			_delay_us(T_WH / 1000);
+		}
+		
+		inline void clock() {
+			CLOCK::set();
+			_delay_us(T_H / 1000);
+			CLOCK::clear();
+			_delay_us(T_SU / 1000);
+		}
+	
 	};
 }
 
