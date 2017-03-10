@@ -1,2 +1,18 @@
 \subsection{Display}
 We've chosen to interface with the display using SPI...
+
+\subsection{Display - PD8544}
+
+Since we are using the nokia 3310 display in our project we needed to write a driver to interface with the chip on the display.
+The chip on the display is a PD8544, and we have used to datasheet to figure out how to interface with it. 
+
+The PD8544 uses a serial interface for both control and data, to select whether we are sending control commands or data to the display,
+there is a input that needs to be high for data and low for commands.
+
+Since we have a serial interface there is also a serial clock pin, a serial data in pin and a serial clock enable pin.
+There is also a pin that is used to reset the display and put it into a known state.
+
+Since the chips interface is serial we decided to use the MEGA32's Serial Pheriphial interface, we are only able to send data to the display 
+and cannot receive so we only have use for the master out slave in pin, and not the master ind slave out pin. 
+
+To start the display driver off we decided to write a SPI driver to handle the setup of clock rate, SPI mode and endianess.
