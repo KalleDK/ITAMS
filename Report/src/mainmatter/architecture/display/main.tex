@@ -30,26 +30,5 @@ We could either make a little circuit to convert the logic level from 5V to 3.3V
 
 Our plan is to create two drivers: a SPI driver and a Display driver.
 
-\subsection{SPI driver}
-
-The SPI interface of the ATMEGA32 is pretty straight forward. There is a few parameters, we need to keep in mind:
-
-\begin{itemize}
-\item SPI mode
-\item Clock frequency
-\item Endianness
-\end{itemize}
-
-These properties will have to match the properties defined in the data sheet of the Display. The implementation will be described in Chapter~\ref{cha:implementation}.
-
-\subsection{Display driver}
-
-The display driver is using the SPI driver for communicating with the display. 
-
-This driver handles the trivial setup of the screen, so it can be used without further setup by the other modules in our system.
-
-This driver implements the different display functions, and makes them available for use, such as setting the X and Y address and changing addressing mode. 
-
-The driver, also, controls the \texttt{Reset} and \texttt{Data/Control} connections to ensure the correct usage.
-
-The implementation will be described in Chapter~\ref{cha:implementation}.
+\input{mainmatter/architecture/display/spi_driver}
+\input{mainmatter/architecture/display/display_driver}

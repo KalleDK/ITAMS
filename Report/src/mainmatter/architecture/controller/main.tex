@@ -1,10 +1,8 @@
 \section{Controller}
 
-\subsection{Introduction}
-
 Snake is only fun if you can actually control the snake. The STK500 have 8 switches which could have been used, but they are both hard to press precisely and fast. They are also clunky as you would have to either hold the whole board or lean over it. To combat this we added a old NES Controller from the Nintendo Entertainment System. It's a simple controller, also with 8 buttons. It uses a TC4021B 8-Stage Static Shift Register and uses its parellel in / serial out operations to transfer which buttons are pushed.
 
-\subsection{NESController}
+\subsection{NES Controller}
 
 We are using the NES Controller in our project and need to write a driver to interface with the chip in that controller.
 The chip in the controller are a TC4021B, and we have used to datasheet\cite{toshiba:tc4021b} to figure out how to interface with it.

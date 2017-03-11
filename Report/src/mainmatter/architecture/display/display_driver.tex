@@ -1,0 +1,11 @@
+\subsection{Display driver}
+
+The display driver is using the SPI driver for communicating with the display. 
+
+This driver handles the trivial setup of the screen, so it can be used without further setup by the other modules in our system.
+
+This driver implements the different display functions, and makes them available for use, such as setting the X and Y address and changing addressing mode. 
+
+The driver, also, controls the \texttt{Reset} and \texttt{Data/Control} connections to ensure the correct usage.
+
+The implementation will be described in Chapter~\ref{cha:implementation}.
