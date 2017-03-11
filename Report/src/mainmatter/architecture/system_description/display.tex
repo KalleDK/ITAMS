@@ -1,58 +1,55 @@
 \section{Display}
 
-In this section we describe how we interface with the display that is used in this project. 
+The driver for the PD8544 is our way to interface the display. We will implement this driver by using key data from the data sheet on the chip, we've found.
 
-\subsection{Display - PD8544}
-
-We are using the nokia 3310 display in our project and need to write a driver to interface with the chip on that display.
-The chip on the display is a PD8544, and we have used to datasheet\cite{philips:pcd8544} to figure out how to interface with it. 
-
-The PD8544 has eigth connections available to us:
+The PD8544 has eight connections available to us\cite{philips:pcd8544}:
 \begin{itemize}
-\item Reset
-\item Clock enable
-\item Data/control
-\item Data in
-\item Clock
-\item Vcc
-\item Back light
-\item Ground
+\item \texttt{Data/Control}
+\item \texttt{Clock Enable}
+\item \texttt{Clock}
+\item \texttt{Data In}
+\item \texttt{Reset}
+\item \texttt{Backlight}
+\item \texttt{VCC}
+\item \texttt{GND}
 \end{itemize}
 
-We will need to connect to most of these and then interface them correctly in order to use the display.
+We will need to connect to most of these and interface them correctly in order to use the display. The PD8544 uses a serial interface, which means we are only to send one bit at a time.
 
-The PD8544 uses a serial interface for both control and data, to select whether we are sending control commands or data to the display,
-the Data/control input is used it needs to be high for data and low for commands.
+The \texttt{Data/Control} connection to select whether we are sending control commands or data to the display. The connection has to be \texttt{HIGH} for data and \texttt{LOW} for commands\cite{philips:pcd8544}.
 
-Since we have a serial interface there is also a serial clock pin, a serial data in pin and a serial clock enable pin.
+The \texttt{Clock Enable} connection is used to tell the display, that we have initiated communication and \texttt{Data in} is used to send data. The data is clocked using the \texttt{Clock} connection, where we provide a serial clock.
 
-There is also a pin that is used to reset the display and put it into a known state. The rest of the pins are power to the display and the backlight.
+The \texttt{Reset} connection is used to reset the display. The rest of the connections are used for power to the display and the back light.
 
-Since the chips interface is serial we decided to use the MEGA32's Serial Pheriphial interface, we are only able to send data to the display 
-and cannot receive so we only have use for the master out slave in pin, and not the master ind slave out pin.
+Since the chip uses a serial interface, we have decided to use the ATMEGA32's SPI (Serial Peripheral interface). 
+Since we are only able to send data to the display, not receive, we only have use for the \texttt{MOSI} (Master Out, Slave In) connection, and not the \texttt{MISO} (Master In, Slave Out) connection.
 
-This display also runs on 3.3V and since our microprocessor runs on 5V we need to deal with this. We could either make a little circuit to convert the 
-logic level from 5V to 3.3V or just ignore it since the display is able to handle a supply of upto 7V. But it will run best at 3.3V.
+The display runs on 3.3V. Since our microcontroller runs on 5V, we have to deal with this. 
+We could either make a little circuit to convert the logic level from 5V to 3.3V. Or we could just ignore it, since the display is able to handle a supply of up to 7V. It will, however, run best at 3.3V.
 
-To start the display driver off we decided to write a SPI driver to handle the setup of clock rate, SPI mode and endianess.
+Our plan is to create two drivers: a SPI driver and a Display driver.
 
-\subsubsection{SPI driver}
-The SPI interface of the ATMEGA32 is pretty straight forward the is a few parameters we need to keep in mind:
+\subsection{SPI driver}
+
+The SPI interface of the ATMEGA32 is pretty straight forward. There is a few parameters, we need to keep in mind:
 
 \begin{itemize}
 \item SPI mode
 \item Clock frequency
-\item Endianess
+\item Endianness
 \end{itemize}
 
-There are four different SPI modes. We need to match the one that our display uses but since this is an SPI driver we should support all modes.
-The same goes for the frequency and the endianess. 
+These properties will have to match the properties defined in the data sheet of the Display. The implementation will be described in Chapter~\ref{cha:implementation}.
 
-\subsubsection{Display driver}
-The display driver is using the SPI driver for writing data to the display, this driver controls the reset and data/control pins and uses them for interfacing
-correctly with the display. 
+\subsection{Display driver}
 
-This driver also implements the different display functions, and makes them available for use by others, 
-such as setting the X and Y address and changeing addressing mode. 
+The display driver is using the SPI driver for communicating with the display. 
 
-This driver also handles the trivial setup of the screen such that it can be used without further setup.
+This driver handles the trivial setup of the screen, so it can be used without further setup by the other modules in our system.
+
+This driver implements the different display functions, and makes them available for use, such as setting the X and Y address and changing addressing mode. 
+
+The driver, also, controls the \texttt{Reset} and \texttt{Data/Control} connections to ensure the correct usage.
+
+The implementation will be described in Chapter~\ref{cha:implementation}.
