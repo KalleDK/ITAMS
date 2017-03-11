@@ -18,19 +18,25 @@ The TC4021B has five connections available to us:
 
 Instead of cutting the cord on the controller, we bought an extension coord, we have therefor mapped the colours of the signals in the extension coord below.
 
-\begin{verbatim}
-     +----> Vcc  (Yellow)
-     |
-   4 +----------+ 6
-     | x  x  o   \
-     | o  o  o  o |
-   3 +------------+ 0
-     |  |  |  |
-     |  |  |  +-> Ground (brown)
-     |  |  +----> Pulse  (orange)
-     |  +-------> Latch  (black)
-     +----------> Data   (red)
-\end{verbatim}
+\begin{figure}
+\centering
+\begin{BVerbatim}
+         +----> Vcc    (yellow)
+         |
+4 +---------+ 6
+ | x  x  o   \
+ | o  o  o  o |
+3 +-----------+ 0
+   |  |  |  |
+   |  |  |  +-> Ground (brown)
+   |  |  +----> Pulse  (orange)
+   |  +-------> Latch  (black)
+   +----------> Data   (red)
+\end{BVerbatim}
+\caption{NES Controller extension cord}
+\label{fig:nes}
+\end{figure}
+
 Mapping of the signals in the NES extention coord.
 
 We need all the pins connected for the controller to work. The Vcc needs to be 5 V as 3 V is not enough to drive the TC4021B.
