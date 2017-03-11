@@ -9,6 +9,7 @@
 #ifndef GAME_SCREEN_H_
 #define GAME_SCREEN_H_
 
+#include <stdlib.h>
 #include "Point.h"
 #include "Enums.h"
 
@@ -284,6 +285,9 @@ namespace Game {
 		using buffer_point_type     = typename buffer_type::point_type;
 		using buffer_point_type_ptr = typename buffer_type::point_type_ptr;
 		
+		using array_point_type      = typename buffer_type::array_point_type;
+		using array_point_type_ptr  = typename buffer_type::array_point_type_ptr;
+		
 		using point_type      = Point;
 		using point_type_ptr  = Point*;
 		
@@ -311,30 +315,25 @@ namespace Game {
 		void draw_idle_menu() {
 			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*6, 12, 1);
 			
-			WriteText(6,1, "PAUSE");
+			WriteText(array_point_type{6,1}, "PAUSE");
 		}
 		
 		template<typename T>
 		void draw_win_menu(T score) {
 			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*7, 12, 1);
 			
-			WriteText(6,1, "YOU WON");
+			WriteText(array_point_type{6,1}, "YOU WON");
+			WriteInt(array_point_type{6,2}, score);
 
 		}
 		
 		template<typename T>
 		void draw_game_over_menu(T score) {
+			
 			buffer_->draw_square_with_border(buffer_point_type{4, 6}, 8*8, 24, 1);
 			
-			WriteText(6,1, "YOU DIED");
-			
-			uint8_t i = 0;
-			do 
-			{
-				WriteChar(30 - (8*i), 2, (score % 10) + '0');
-				score = score / 10;
-			} while (score > 0);
-			
+			WriteText(array_point_type{6,1}, "YOU DIED");
+			WriteInt(array_point_type{6,2}, score);
 
 		}
 		
@@ -399,37 +398,39 @@ namespace Game {
 		}
 		
 		private:
-		void WriteChar(const uint8_t& startCol, const uint8_t& startRow, const char letter){
+		array_point_type WriteChar(array_point_type array_point, const char letter){
 
-				uint8_t place = ((letter - '0')*5)+4;
-				buffer_->set_data(startCol , startRow, textEncodeding[place]);
-				buffer_->set_data(startCol + 1, startRow, textEncodeding[place - 1]);
-				buffer_->set_data(startCol + 2, startRow, textEncodeding[place - 2]);
-				buffer_->set_data(startCol + 3, startRow, textEncodeding[place - 3]);
-				buffer_->set_data(startCol + 4, startRow, textEncodeding[place - 4]);
-	
+			if (letter == ' ') { 
+				array_point.column += 6;
+				return array_point; 
+			}
+			
+			uint8_t place = ((letter - '0')*5)+4;
+			
+			for (auto i = 0; i < 5; ++i) {
+				buffer_->set_data(array_point, textEncodeding[place - i]);
+				++array_point.column;
+			}
+			++array_point.column;
+			
+			return array_point;
+
 		}
 		
-		void WriteText(const uint8_t& startCol, const uint8_t& startRow, const char* letters){
-			uint8_t index = 0;
+		void WriteInt(array_point_type array_point, const int& value) {
+			char str[10];
+			itoa(value, str, 10);
+			WriteText(array_point, str);
+		}
+		
+		void WriteText(array_point_type array_point, const char* letters){
 			while (*letters != '\0')
 			{
-				if (*letters == ' ')
-				{
-					letters++;
-					index += 6;
-					continue;
-				}
-				uint8_t place = ((*letters - '0')*5)+4;
-				buffer_->set_data(startCol + index, startRow, textEncodeding[place]);
-				buffer_->set_data(startCol + index + 1, startRow, textEncodeding[place - 1]);
-				buffer_->set_data(startCol + index + 2, startRow, textEncodeding[place - 2]);
-				buffer_->set_data(startCol + index + 3, startRow, textEncodeding[place - 3]);
-				buffer_->set_data(startCol + index + 4, startRow, textEncodeding[place - 4]);
+				array_point = WriteChar(array_point, *letters);
 				letters++;
-				index +=6;
 			}
 		}
+
 	};
 }
 

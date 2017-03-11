@@ -23,6 +23,9 @@ namespace Screen {
 		using point_type     = Point;
 		using point_type_ptr = Point*;
 		
+		using array_point_type     = ArrayPoint;
+		using array_point_type_ptr = ArrayPoint*;
+		
 		static uint8_t const rows = (HEIGHT+7)/8;
 		static uint8_t const columns = WIDTH;
 		static uint16_t const size = columns*rows;
@@ -81,6 +84,10 @@ namespace Screen {
 			}
 			
 			return true;
+		}
+		
+		void set_data(const array_point_type& arr_point, const uint8_t& data) {
+			*(&buffer[0] + (arr_point.column * rows) + arr_point.row) = data;
 		}
 		
 		void set_data(const uint8_t& column, const uint8_t& row, const uint8_t& data) {

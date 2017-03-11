@@ -14,6 +14,12 @@ namespace Screen {
 		int16_t x;
 		int16_t y;
 	};
+	
+	struct ArrayPoint {
+		uint8_t column;
+		uint8_t row;
+		
+	};
 	}
 
 
