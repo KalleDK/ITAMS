@@ -53,3 +53,13 @@ Serial mode is when the Latch is low. In this state the Data pin has the state o
 \end{figure}
 
 The order of the states of the buttons are transfered are found by simply trial, as there is no official public datasheet for the controller. The order are as follows A, B, Select, Start, Up, Down, Left, Right.
+
+\subsection{SPI driver}
+
+As we use the hardware SPI interface for the screen, we choose to implement the controller with a software SPI driver. It uses a few template inputs.
+
+\begin{itemize}
+\item SPI Pin Collection ( The 3 pins needed to use SPI )
+\item Number of Bits that needs transfered ( The controller needs 8 )
+\item 4 Delay timers ( Descriped more in the implementation )
+\end{itemize}
