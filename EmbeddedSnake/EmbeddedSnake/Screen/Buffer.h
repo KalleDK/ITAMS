@@ -13,6 +13,12 @@
 #include "Point.h"
 
 namespace Screen {
+	
+	template<bool B, class T = void>
+	struct enable_if {};
+
+	template<class T>
+	struct enable_if<true, T> { typedef T type; };
 
 
 	template<typename DISPLAY>
@@ -43,58 +49,46 @@ namespace Screen {
 			update();
 		}
 		
-		void update() {
-			display->SetYAddress(0);
-			display->SetXAddress(0);
+		template<typename Q = DISPLAY>
+		typename enable_if<Q::addressing_static && Q::addressing_vertical, void>::type
+		update() {
+			display->SetAddress(0,0);
 			display->Write(buffer, size);
 		}
 		
-		void update(Point point, uint8_t width, uint8_t height) {
-			
-			uint8_t row = (point.y/8 < 0 ? 0 : point.y/8);
-			//uint8_t row_height = 2;
-			uint8_t row_height = ((point.y+height+7)/8 > rows ? rows : (point.y+height+7)/8) - row;
-			
-			for (uint8_t column = point.x; column < point.x+width; ++column) {
-				display->SetYAddress(row);
-				display->SetXAddress(column);
-				uint8_t* ptr = &buffer[column*rows+row];
-				display->Write(ptr, row_height);
+		template<typename Q = DISPLAY>
+		typename enable_if<!(Q::addressing_static && Q::addressing_vertical), void>::type
+		update() {
+			update(Point{0,0}, columns, rows*8);
+		}
+		
+		template<typename Q = DISPLAY>
+		typename enable_if<Q::addressing_static && Q::addressing_vertical, void>::type
+		update(Point point, uint8_t width, uint8_t height) {
+			update_vertical(point, width, height);
+		}
+		
+		template<typename Q = DISPLAY>
+		typename enable_if<Q::addressing_static && (!Q::addressing_vertical), void>::type
+		update(Point point, uint8_t width, uint8_t height) {
+			update_horizontal(point, width, height);
+		}
+		
+		template<typename Q = DISPLAY>
+		typename enable_if<!Q::addressing_static, void>::type
+		update(Point point, uint8_t width, uint8_t height) {
+			if (display->current_addressing_vertical) {
+				update_vertical(point, width, height);
+			} else {
+				update_horizontal(point, width, height);
 			}
 		}
 		
-		bool is_inside (const Point& point, uint8_t width, uint8_t height) {
-			
-			// Is outside to the right
-			if (point.x > columns) {
-				return false;
-			}
-			
-			// Is outside to the down
-			if (point.y > columns * 8) {
-				return false;
-			}
-			
-			// Is outside to the left
-			if (point.x + width < 0) {
-				return false;
-			}
-			
-			// Is outside to the up
-			if (point.y + height < 0) {
-				return false;
-			}
-			
-			return true;
-		}
 		
 		void set_data(const array_point_type& arr_point, const uint8_t& data) {
 			*(&buffer[0] + (arr_point.column * rows) + arr_point.row) = data;
 		}
 		
-		void set_data(const uint8_t& column, const uint8_t& row, const uint8_t& data) {
-			*(&buffer[0] + (column * rows) + row) = data;
-		}
 		
 		void draw_square(Point point, uint8_t width, uint8_t height) {
 			if (!is_inside(point, width, height)) {
@@ -141,26 +135,6 @@ namespace Screen {
 				height -= middle_height;
 				point.y += middle_height;
 			}
-		}
-		
-		void set(uint8_t data ) {
-			memset(buffer, data, size);
-		}
-		
-		void clear() {
-			set(0x00);
-		}
-		
-		void set() {
-			set(0xFF);
-		}
-		
-		void set(Point point) {
-			draw_square(point, 1, 1);
-		}
-		
-		void clear(Point point) {
-			clear_square(point, 1, 1);
 		}
 		
 		void clear_square(Point point, uint8_t width, uint8_t height) {
@@ -210,6 +184,29 @@ namespace Screen {
 			}
 		}
 		
+		
+		void clear() {
+			set(0x00);
+		}
+		
+		void set() {
+			set(0xFF);
+		}
+		
+		void set(uint8_t data ) {
+			memset(buffer, data, size);
+		}
+		
+		
+		void set(Point point) {
+			draw_square(point, 1, 1);
+		}
+		
+		void clear(Point point) {
+			clear_square(point, 1, 1);
+		}
+		
+		
 		void draw_border(Point point, uint8_t width, uint8_t height, uint8_t thickness) {
 			draw_square(point, width, thickness);
 			draw_square(point, thickness, height);
@@ -221,6 +218,63 @@ namespace Screen {
 			clear_square(point, width, height);
 			draw_border(point, width, height, thickness);
 		}
+		
+	private:
+		template<typename Q = DISPLAY>
+		typename enable_if<(!Q::addressing_static) || Q::addressing_vertical, void>::type
+		inline update_vertical(Point point, uint8_t width, uint8_t height) {
+			
+			uint8_t row = (point.y/8 < 0 ? 0 : point.y/8);
+			uint8_t row_height = ((point.y+height+7)/8 > rows ? rows : (point.y+height+7)/8) - row;
+			
+			for (uint8_t column = point.x; column < point.x+width; ++column) {
+				uint8_t* ptr = &buffer[column*rows+row];
+				display->SetAddress(column, row);
+				display->Write(ptr, row_height);
+			}
+		}
+		
+		template<typename Q = DISPLAY>
+		typename enable_if<(!Q::addressing_static) || Q::addressing_vertical, void>::type
+		inline update_horizontal(Point point, uint8_t width, uint8_t height) {
+			
+			uint8_t row_start = (point.y/8 < 0 ? 0 : point.y/8);
+			uint8_t row_end = ((point.y+height+7)/8 > rows ? rows : (point.y+height+7)/8);
+			
+			for (uint8_t column = point.x; column < point.x+width; ++column) {
+				for(uint8_t row  = row_start; row < row_end; ++row) {
+					uint8_t* ptr = &buffer[column*rows+row];
+					display->SetAddress(column, row);
+					display->Write(ptr, 1);
+				}
+			}
+		}
+		
+		bool is_inside (const Point& point, uint8_t width, uint8_t height) {
+			
+			// Is outside to the right
+			if (point.x > columns) {
+				return false;
+			}
+			
+			// Is outside to the down
+			if (point.y > columns * 8) {
+				return false;
+			}
+			
+			// Is outside to the left
+			if (point.x + width < 0) {
+				return false;
+			}
+			
+			// Is outside to the up
+			if (point.y + height < 0) {
+				return false;
+			}
+			
+			return true;
+		}
+		
 	};
 
 }

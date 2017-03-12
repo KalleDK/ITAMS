@@ -77,6 +77,9 @@ namespace PD8544 {
 			Inverse = 3,
 		};
 		
+		static const bool addressing_vertical = true;
+		static const bool addressing_static = true;
+		
 
 
 		Driver(){
@@ -149,6 +152,12 @@ namespace PD8544 {
 				break;
 			}
 			Command((1 << (uint8_t)H0Commands::DisplayControl) | command);
+		}
+		
+		void SetAddress(uint8_t x, uint8_t y)
+		{
+			SetXAddress(x);
+			SetYAddress(y);
 		}
 		
 		void SetYAddress(uint8_t y)

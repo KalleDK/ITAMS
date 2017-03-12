@@ -1,1 +1,31 @@
 \subsection{Screen buffer}
+
+Instead of constantly calculating how the screen looks, we have a buffer that keeps a copy of the screen in an array. This enables os to do calculations easier and also only update parts of the screen as needed. To save space it keeps 8 pixels state per uint8\_t in it's internal buffer.
+
+\subsubsection{Setup}
+
+The setup of this buffer is performed automaticlly via templates on compiletime. The only requirements there are to the Display is the following variables and method. This enables the buffer to be used with other Display's without the need to change in the implementation.
+
+\begin{itemize}
+\item SetAddress
+\item Write
+\item rows
+\item columns
+\item addressing\_static
+\item addressing\_vertical
+\item current\_addressing\_vertical (only needed if addressing\_static is false)
+\end{itemize}
+
+The two first methods are used to set the row and column to where we want to write on the Display and to actually write there.
+
+The next two are used to create a correctly sized array on compiletime and eliminating any dynamic allocation.
+
+As many displays can either work in vertical mode or horizontal mode - or dynamic change mode the last two/three are used to optimize the communication.
+
+If the Display can shift between vertical and horizontal mode, then we need a runtime check on the current\_addressing\_vertical to be sure we are writing the correct way. Now if the Display only works in one direction, then there's no need to have this runtime check. So if the addressing\_static is true on compiletime, only the correct direction is compiled into the binary and used directly.
+
+\subsubsection{Usage}
+
+The user of the buffer should not in general worry about how the data is stored in the 8 pixel's per uint8\_t. The only funtion that allows the user to access the array directly is the set\_data, which is used for text that matches the 8 bit height.
+
+The rest of the function uses pixel x,y coordinates. The two main functions are the draw\_square and clear\_square as most other figures can be made with these. They calculate / recalculate the dimension given, to make sure only the part inside the screen is added. It also does the hard merging part of already existing data and the new data, when they share the same uint8\_t.
