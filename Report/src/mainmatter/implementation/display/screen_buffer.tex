@@ -20,9 +20,49 @@ The two first methods are used to set the row and column to where we want to wri
 
 The next two are used to create a correctly sized array on compiletime and eliminating any dynamic allocation.
 
-As many displays can either work in vertical mode or horizontal mode - or dynamic change mode the last two/three are used to optimize the communication.
+As many displays can either work in vertical mode or horizontal mode (see figure~\ref{fig:array_horizontal} and~\ref{fig:array_vertical} ) - or some dynamicly change between the two modes, the last two/three variables are used to optimize the communication to the Display.
 
-If the Display can shift between vertical and horizontal mode, then we need a runtime check on the current\_addressing\_vertical to be sure we are writing the correct way. Now if the Display only works in one direction, then there's no need to have this runtime check. So if the addressing\_static is true on compiletime, only the correct direction is compiled into the binary and used directly.
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\textwidth]{implementation/array_horizontal}
+  \caption{Horizontal Addressed Display}
+  \label{fig:array_horizontal}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.4\textwidth]{implementation/array_vertical}
+  \caption{Vertical Addressed Display}
+  \label{fig:array_vertical}
+\end{minipage}
+\end{figure}
+
+
+If the Display can shift between vertical and horizontal mode, then we need a runtime check on the current\_addressing\_vertical to be sure we are writing the correct way (see Listing~\ref{lst:dynamic_mode}). Now if the Display only works in one direction, then there's no need to have this runtime check. So if the addressing\_static is true on compiletime, only the correct direction is compiled into the binary and used directly (see Listing~\ref{lst:static_vertical}).
+
+\noindent\begin{minipage}[t]{.45\textwidth}
+\begin{lstlisting}[caption={Dynamic Mode},label={lst:dynamic_mode},frame=tlrb, language=C++]{Name}
+template<typename Q = DISPLAY>
+typename enable_if<!Q::addressing_static, void>::type
+update(Point point, uint8_t width, uint8_t height) {
+    if (display->current_addressing_vertical) {
+  	    update_vertical(point, width, height);
+  	} else {
+  			update_horizontal(point, width, height);
+  	}
+}
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{.45\textwidth}
+\begin{lstlisting}[caption={Static Vertical Mode},label={lst:static_vertical},frame=tlrb, language=C++]{Name}
+template<typename Q = DISPLAY>
+typename enable_if<Q::addressing_static && Q::addressing_vertical_mode, void>::type
+update(Point point, uint8_t width, uint8_t height) {
+    update_vertical(point, width, height);
+}
+\end{lstlisting}
+\end{minipage}
 
 \subsubsection{Usage}
 
