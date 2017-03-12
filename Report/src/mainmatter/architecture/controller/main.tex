@@ -67,3 +67,20 @@ As we use the hardware SPI interface for the screen, we choose to implement the 
 \item Number of Bits that needs transfered ( The controller needs 8 )
 \item 4 Delay timers ( Descriped more in the implementation )
 \end{itemize}
+
+
+\subsection{Controller Driver}
+
+To make it easier to read the controller we a made a simple driver that uses the SPI driver to read the states of the buttons. As it's a oneway read communication, it simply read and parses the signal, and set the different buttons value accordingly.
+
+
+\begin{itemize}
+\item A
+\item B
+\item Select
+\item Start
+\item Up
+\item Down
+\item Left
+\item Right
+\end{itemize}
