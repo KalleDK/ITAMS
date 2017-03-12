@@ -24,6 +24,9 @@ namespace PD8544 {
 	class Driver
 	{
 		public:
+		
+		static const uint8_t rows = 6;
+		static const uint8_t columns = 84;
 
 		enum class Pins : uint8_t
 		{

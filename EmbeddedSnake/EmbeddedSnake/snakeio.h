@@ -29,7 +29,7 @@ using SPI_T = SPI::Driver<SPI::Order::MSB_FIRST, SPI::Mode::SAMPLE_RISING_SETUP_
 using DISPLAY_T = PD8544::Driver<SPI_T>;
 
 #include "Screen/Buffer.h"
-using SCREENBUFFER_T = Screen::Buffer<84, 48, DISPLAY_T>;
+using SCREENBUFFER_T = Screen::Buffer<DISPLAY_T>;
 
 
 #endif /* SNAKEIO_H_ */

@@ -15,7 +15,7 @@
 namespace Screen {
 
 
-	template<uint8_t WIDTH, uint8_t HEIGHT, typename DISPLAY>
+	template<typename DISPLAY>
 	struct Buffer
 	{
 		using point = Point;
@@ -26,15 +26,17 @@ namespace Screen {
 		using array_point_type     = ArrayPoint;
 		using array_point_type_ptr = ArrayPoint*;
 		
-		static uint8_t const rows = (HEIGHT+7)/8;
-		static uint8_t const columns = WIDTH;
-		static uint16_t const size = columns*rows;
+		using display_type     = DISPLAY;
+		using display_type_ptr = DISPLAY*;
+		
+		static uint8_t const rows    = DISPLAY::rows;
+		static uint8_t const columns = DISPLAY::columns;
+		static uint16_t const size   = columns * rows;
 		
 		uint8_t buffer[size];
-		DISPLAY * const display;
+		display_type_ptr const display;
 		
-		Buffer(DISPLAY *const display) : display(display) {
-		}
+		Buffer(display_type_ptr const display) : display(display) {}
 		
 		void init() {
 			clear();
