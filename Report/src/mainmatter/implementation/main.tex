@@ -2,6 +2,10 @@
 
 This chapter will go into more detail about how we built the system. Here we will describe the decisions made, and reflect on the outcome.
 
+We chose to make the game and drivers in C++ because we wanted to make use of the templating features in the language as a means of abstracting away specific details about our drivers/game. Thereby creating a more general implementation. 
+
+Templating also gives us the advantage of eradicating run-time checks, that could have been done on compile-time. Thereby removing some performance overhead.
+
 \input{mainmatter/implementation/display/main}
 \input{mainmatter/implementation/controller/main}
 \input{mainmatter/implementation/game/main}
