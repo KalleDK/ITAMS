@@ -4,6 +4,8 @@ The Screen class is used to map the Game onto the Display. This is to keep all t
 
 The Area's reprensentation only knows about fields, and which are necxt to each other. This class maps this info unto the Screen. Therefore the game only knows which fields are next to each other, and not how they are displayed on the screen.
 
+\subsubsection{Layout}
+
 The first revison was simply to map each field to a 3-by-3 square (see~\ref{fig:screen_fields_rev1}) which worked, but it became really hard to visualise how the snake was tangled as it often was represented like a black blob (see Figure~\ref{fig:screen_fields_rev1}). In the next revesion we added a border to the fields, which was easy to do, as all the drawing and calculations was already collected in this class. This change meant that each field shares it's borders wit the neighbour field. So that when the snake head is drawn' it is not allowed to draw in the border, as it does not know from where it came (see the yellow marking in Figure~\ref{fig:screen_fields_rev2}). The same applies to the part before. It knows only that it goes to the right, and therefor fills out the right border (see the red marking in Figure~\ref{fig:screen_fields_rev2}), but are not allowed to touch they other borders, as it also doesn't know where it came from.
 
 \begin{figure}
@@ -32,7 +34,9 @@ buffer_point_type convert_point(const point_type& point) const {
 
 The offsettings is made to squezze in an extra Field, as the border only need a single pixel to be drawn. So if the border would be changed to actually fill the 3-by-3 it wouldn't be displayed on the Display.
 
-So draw the snake going right the it simply draws a rectancle based on the bufferpoint it is given (see Listing~\ref{lst:draw_snake})
+\subsubsection{Drawing objects}
+
+To draw the snake going right the it simply draws a rectancle based on the bufferpoint it is given (see Listing~\ref{lst:draw_snake})
 
 \begin{lstlisting}[caption={Drawing a snake turning right},label={lst:draw_snake},frame=tlrb, language=C++]{Name}
 // Example Implementation
@@ -41,3 +45,45 @@ void draw_snake_right(const point_type& point) {
   buffer_->draw_square(buffer_point, 4 , 3);
 }
 \end{lstlisting}
+
+\subsubsection{Drawing text}
+
+To enable the use of text without to much calculations, we use a font that is 8 pixels heigh and use the uint8\_t rows as lines. We can then use the ScreenBuffers set\_data functio to write directly in the buffer.
+
+To keep the sprites of the alphabet we have a large array with with the ascii chars from 0 to Z and space. So to draw a char we calculate the correct place (see Listing~\ref{lst:sprite_location}) in the array and read out the sprite data for that single char, and sends it to the ScreenBuffer (see Listing~\ref{lst:draw_char})
+
+\noindent\begin{minipage}[t]{.45\textwidth}
+\begin{lstlisting}[caption={Drawing a Char},label={lst:draw_char},frame=tlrb, language=C++]{Name}
+array_point_type WriteChar(array_point_type array_point, const char& letter){
+
+    // Write the Char Sprite
+    for (auto itr = TextEncoding::begin(letter); itr != TextEncoding::end(letter); --itr) {
+  	   buffer_->set_data(array_point, *itr);
+  		 ++array_point.column;
+  	}
+
+    // Write a "space" after a character, this is to save space in the TextData array
+    buffer_->set_data(array_point, 0x00);
+  	++array_point.column;
+
+    // Return the next position for the next Char
+  	return array_point;
+}
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{.45\textwidth}
+\begin{lstlisting}[caption={Calculating Sprite Location},label={lst:sprite_location},frame=tlrb, language=C++]{Name}
+static const uint8_t* begin(unsigned char ch) {
+    // Move ' ' as it's not near they others in ascii value
+    ch = (ch == ' ' ? 'Z' + 1 : ch);
+    return &TextData[((ch - '0')*5)+4];
+}
+
+static const uint8_t* end(unsigned char ch) {
+    // All out sprites has a width of 5
+    return begin(ch) - 5;
+}
+\end{lstlisting}
+\end{minipage}
+
+As we now can draw a single char it's easy to draw a string via a loop, and a number via the itoa method.
