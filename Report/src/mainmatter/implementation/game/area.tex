@@ -1,8 +1,6 @@
 \subsection{Area}
 
-Now we have a field that represents a part of the whole playing surface, to keep the fields in order we have the area class.
-This class holds an array of fields, it also has convinience methods for getting a specific field for using when playing.
-It could be that we need to check that the field the snake moves into is not a collision, thats why we have the method in figure \ref{lst:get_neighbour}
+Now we have a Field that represents a part of the whole playing surface. To keep the Fields in order, we have the Area class. This class holds an array of fields. It has convenient methods for getting a specific field when playing. It could be that we need to check that the field the Snake moves into, is not a collision, thats why we have the method in Listing~\ref{lst:get_neighbour}.
 
 
 \begin{lstlisting}[caption={Getting a neighbour field},label={lst:get_neighbour},frame=tlrb, language=C++]{Name}
@@ -17,4 +15,4 @@ value_type_ptr get_neighbour(value_type_ptr field, Direction direction) {
 }
 \end{lstlisting}
 
-The area class is a nice encapsulation of the playing field which contains a few functions to calculate use full information such as which field is a neighbour.
+The Area class is a nice encapsulation of the playing field, which contains a few functions to use such as finding out which field is a neighbor.

@@ -1,17 +1,17 @@
 \subsection{Field}
 
-When the Snake moves around it moves onto Fields. A Field can be either a Snake, None, Border or Fruit. To keep the Field's footprint small we use a uin8\_t to keep both the type and the values. So to correctly get the information from a Field, you first have to get the Type Id and then the appropriate function to get the values
+When the Snake moves around it moves onto Fields. A Field can be either a Snake, None, Border or Fruit. To keep the Field's footprint small we use a \texttt{uin8\_t} to keep both the type and the values. So to correctly get the information from a Field, you first have to get the type id and then call the appropriate function to get the values.
 
-\begin{lstlisting}[caption={Getting Correct Data From a Field},label={lst:get_snake},frame=tlrb, language=C++]{Name}
+\begin{lstlisting}[caption={Getting correct data from a field},label={lst:get_snake},frame=tlrb, language=C++]{Name}
 if (field->get_id() == type_id::Snake) {
     snake_value tmp = field->get_snake();
     // Do Stuff
 }
 \end{lstlisting}
 
-This is implemented by simply letting the first 4 bits being the type id and the next 4 the values from this type.
+This is implemented by simply letting the first four bits (LSB first) being the type id and the next four the values from this type.
 
-So when you want to set a Field to a fruit you use the set\_fruit method. This in turns calls the set method that is private (see Listing~\ref{lst:set_fruit}). This is to ensure that you can't by accident create a Field with a Snake Type Id, but a Fruit's value.
+So when you want to set a Field to a fruit you use the \texttt{set\_fruit} method. This calls the set method, that is private (see Listing~\ref{lst:set_fruit}). This is to ensure that you can't by accident create a Field with a Snake type id, but a Fruit's value.
 
 \begin{lstlisting}[caption={Updating a Field},label={lst:set_fruit},frame=tlrb, language=C++]{Name}
 public:
