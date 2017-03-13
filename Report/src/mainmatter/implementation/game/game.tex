@@ -8,7 +8,7 @@ Afterwards, on each tick a method is called based on what the player is pushing.
 
 When the Snake moves, the Game gets the type of the Field it want's to enter and calls the method associated with it. The most used it the move\_snake\_into\_none (see Listing \ref{lst:move_snake_into_none}) Here the game checks if the snake is growing. If the Snake grows we have one less Field and is closer to the winning condition, where there is no more free spaces left. If the Snake does not grow, it has to move the tail. This has to happen before the movement of the head, as the head can move into the space where the tail was. Then the head is moved, and the Game waits for another input from the player.
 
-\begin{lstlisting}[caption={Drawing a snake turning right},label={lst:draw_snake},frame=tlrb, language=C++]{Name}
+\begin{lstlisting}[caption={Moving the Snake into an empty Field},label={lst:move_snake_into_none},frame=tlrb, language=C++]{Name}
 void move_snake_into_none(field_type_ptr field) {
     if (snake.is_growing()) {
         move_snake_tail();

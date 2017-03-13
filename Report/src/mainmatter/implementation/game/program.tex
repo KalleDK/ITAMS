@@ -13,14 +13,13 @@ void tick() {
 }
 \end{lstlisting}
 
-As seen in Listing~\ref{lst:tick}, we have different behavior depending upon which state we are in. The tick decides what to do depending on the state, the game is in. 
+As seen in Listing~\ref{lst:tick}, we have different behavior depending upon which state we are in. The tick decides what to do depending on the state, the game is in.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth, trim={5mm 10mm 5mm 5mm}, clip]{implementation/stm}
 \caption{Flowchart of basic Snake game}
-\label{fig:flow}
+\label{fig:flow_program}
 \end{figure}
 
-As seen in Figure~\ref{fig:flow}, we have four states and a reset state, that only ensures, we get reset properly. The reason for the START button pausing the game and the A button resuming is that we do not check whether the button was pressed in the previous tick.  If multiple button presses are transmitted, the game will forward in one direction.
-
+As seen in Figure~\ref{fig:flow_program}, we have four states and a reset state, that only ensures, we get reset properly. The reason for the START button pausing the game and the A button resuming is that we do not check whether the button was pressed in the previous tick.  If multiple button presses are transmitted, the game will forward in one direction.
