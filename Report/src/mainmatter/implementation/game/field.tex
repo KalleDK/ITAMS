@@ -1,1 +1,12 @@
 \subsection{Field}
+
+When the Snake moves around it moves onto Fields. A Field can be either a Snake, None, Border or Fruit. To keep the Field's footprint small we use a uin8\_t to keep both the type and the values. So to correctly get the information from a Field, you first have to get the Type Id and then the appropriate function to get the values
+
+\begin{lstlisting}[caption={Getting Correct Data From a Field},label={lst:get_snake},frame=tlrb, language=C++]{Name}
+if (field->get_id() == type_id::Snake) {
+  snake_value tmp = field->get_snake();
+  // Do Stuff
+}
+\end{lstlisting}
+
+This is implemented by simply letting the first 4 bits being the type id and the next 4 the values from this type.
