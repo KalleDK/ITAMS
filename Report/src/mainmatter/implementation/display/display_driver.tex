@@ -7,10 +7,15 @@ even though it says in the datasheet\cite[p. 17]{philips:pcd8544} that it can ru
 For interfaceing the display we are using a hex buffer that we supply with 3.3V this enables us to run the output from the
 microprocessor to the buffer at 5V and then the buffer shifts the level down to 3.3V\cite[p. 1]{STMicroelectronics:HCF4050B}.
 
-To make the 3.3V we are using an LM317L that can take the 5V supply by the STK kit and convert it to 3.3V.
-We made a small circuit that can be seen in
+To make the 3.3V we are using an LM317L that can take the 5V supplied by the STK kit and convert it to 3.3V. 
+We made a small circuit that can be seen in figure \ref{fig:pcd8544_circuit}.
 
-\improvement{Insert diagram here}
+\begin{figure}
+	\centering
+	\includegraphics[width=.9\textwidth]{implementation/pcd8544_circuit}
+	\caption{3.3Volt circuit}
+	\label{fig:pcd8544_circuit}
+\end{figure}
 
 The circuit is quite simple and consist of the LM317 and the HCF4050B hex buffer and two resistors for the LM317.
 Since all the buffer does is change the level the inputs to the buffer from the atmega maps to the output of the buffer to the screen.
