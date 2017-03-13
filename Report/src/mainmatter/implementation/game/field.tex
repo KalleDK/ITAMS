@@ -4,9 +4,22 @@ When the Snake moves around it moves onto Fields. A Field can be either a Snake,
 
 \begin{lstlisting}[caption={Getting Correct Data From a Field},label={lst:get_snake},frame=tlrb, language=C++]{Name}
 if (field->get_id() == type_id::Snake) {
-  snake_value tmp = field->get_snake();
-  // Do Stuff
+    snake_value tmp = field->get_snake();
+    // Do Stuff
 }
 \end{lstlisting}
 
 This is implemented by simply letting the first 4 bits being the type id and the next 4 the values from this type.
+
+So when you want to set a Field to a fruit you use the set\_fruit method. This in turns calls the set method that is private (see Listing~\ref{lst:set_fruit}). This is to ensure that you can't by accident create a Field with a Snake Type Id, but a Fruit's value.
+
+\begin{lstlisting}[caption={Updating a Field},label={lst:set_fruit},frame=tlrb, language=C++]{Name}
+public:
+void set_fruit(fruit_value value) {
+    set(type_id::Fruit, static_cast<uint8_t>(value));
+}
+private:
+void set(type_id id, uint8_t value) {
+		data = value << 4 | static_cast<uint8_t>(id);
+}
+\end{lstlisting}
