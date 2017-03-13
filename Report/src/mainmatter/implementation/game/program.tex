@@ -1,6 +1,5 @@
 \subsection{Program}
-To tie everything together we have made the program class which handles the state of the game.
-This class is a statemachine, that handles whether we are playing, or are in a menu. 
+To tie everything together we have made the program class which handles the state of the game. This class is a classic state machine.
 
 \begin{lstlisting}[caption={A tick of the game},label={lst:tick},frame=tlrb, language=C++]{Name}
 void tick() {
@@ -14,12 +13,14 @@ void tick() {
 }
 \end{lstlisting}
 
-As seen in listing \ref{lst:tick} we have different behaiveour depending upon which state we are in, 
-here it is the tick that is run to forward the game the state is set else where and here we decide what to do in this state.
+As seen in Listing~\ref{lst:tick}, we have different behavior depending upon which state we are in. The tick decides what to do depending on the state, the game is in. 
 
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth, trim={5mm 10mm 5mm 5mm}, clip]{implementation/stm}
+\caption{Flowchart of basic Snake game}
+\label{fig:flow}
+\end{figure}
 
-\improvement{KRISTIAN SET IND HER}
+As seen in Figure~\ref{fig:flow}, we have four states and a reset state, that only ensures, we get reset properly. The reason for the START button pausing the game and the A button resuming is that we do not check whether the button was pressed in the previous tick.  If multiple button presses are transmitted, the game will forward in one direction.
 
-As seen in figure ????? we have four states and a reset state that just ensure we get reset properly.
-The reason for the start button pauseing the game and the A button resumes is that we do not check whether the button was pressed in the previous tick.
-This class also forwards button presses to the game and it will only forward one direction even if more than one direction is pressed.
