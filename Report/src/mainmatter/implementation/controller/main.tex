@@ -1,18 +1,26 @@
 \section{Controller}
 
-\subsection{Software SPI}
+This section describes the controller implementation. The implementation consists of a SPI driver and a Controller driver.
 
-The Software SPI is not a fully fledged SPI Driver, and only master in.
+\subsection{SPI driver}
+
+Since the hardware SPI driver is in use, we decided to write a SPI driver written in software. This is not a fully fledged SPI Driver as it is only Master In, Slave Out.
 
 \subsubsection{Setup}
 
-The Software SPI Driver needs to know which Buffer it should use to return the data in and how many bit's it should read. Which Pins should be used as io. Which clock and sample mode it should use and the 4 timing values.
+On setup, the software SPI driver needs to know: 
+\begin{itemize}
+	\item which type of buffer it should use to return the data in
+	\item how many bits it should read
+	\item which pins should be used as I/O
+	\item which serial clock and sample mode it should use and the four timing values
+\end{itemize}
 
-As Buffer the SPI::Buffer can be used, which takes a single argument to know how many bits it should hold, and via that number it calculate the most optimal container to keep the bits in.
+The \texttt{SPI::Buffer} type can be used as a buffer. The buffer can be setup with the amount of bits it should hold, and using that number it calculates  the most optimal container to keep the bits in.
 
-The three pins is the Data In, Latch and Clock.
+There are three I/O pins: \texttt{Data In}, \texttt{Latch} and \texttt{Clock}. In the I/O setting, it can be chosen which pins they should be using.
 
-The Mode type should have a cpol and a cpha value. This helps eliminating and choose functions for the trasfers (see Listing~\ref{lst:cpol_pulse}).
+The mode type should be given a clock polarity value and a clock phase value. This helps eliminating and choose functions for the transfers (see Listing~\ref{lst:cpol_pulse}).
 
 \begin{lstlisting}[caption={CPOL Determines when to sample},label={lst:cpol_pulse},frame=tlrb, language=C++]{Name}
 template<typename Q = MODE>
@@ -32,9 +40,17 @@ pulse(buffer_type& buffer) {
 }
 \end{lstlisting}
 
-\subsubsection{NES Controller}
+The four timing values are:
+\begin{itemize}
+	\item Min. Removal Time - From LATCH is lowered until CLOCK may be risen
+	\item Min. Pulse Width - From LATCH is raised until LATCH may be lowered
+	\item Min. Hold Time - From CLOCK is raised until DATA can be read
+	\item Min. Set-up Time - Setup time for next DATA
+\end{itemize}
 
-The NES Controller uses the SPI to read the states of the button on the controller. The only function used is the update function, that refreshes the states in the object (see Listing~\ref{lst:controller_update}).
+\subsection{Controller driver}
+
+The NES Controller uses the software SPI driver to read the state of the buttons on the controller. The function \texttt{update} is used to refresh the states in the object (see Listing~\ref{lst:controller_update}). It simply sets the boolean values of the buttons according to the states given from the SPI driver.
 
 \begin{lstlisting}[caption={Updating the state of the controller},label={lst:controller_update},frame=tlrb, language=C++]{Name}
 void update() {
@@ -54,4 +70,3 @@ inline bool get(const uint8_t& data, ButtonOrder button) {
 }
 \end{lstlisting}
 
-It simply sets the boolean values of the different buttons according to the states from the SPI driver.
