@@ -15,14 +15,12 @@ namespace Game {
 		
 		Snake() = default;
 		
-		Snake(FIELD* field, DIRECTION direction, uint16_t grow) : head(field), tail(field), grow(grow), is_alive(true), direction(direction) {};
+		Snake(FIELD* field, DIRECTION direction, uint16_t grow) : head(field), tail(field), grow(grow), direction(direction) {};
 
 		FIELD* head;
 		FIELD* tail;
 		
 		uint16_t grow;
-		
-		bool is_alive;
 		
 		DIRECTION direction;
 		

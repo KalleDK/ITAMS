@@ -238,7 +238,6 @@ namespace Game {
 		// Snake functions
 
 		void kill_snake() {
-			snake.is_alive = false;
 			player = player_state::Lost;
 		};
 
