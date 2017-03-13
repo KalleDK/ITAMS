@@ -16,7 +16,7 @@ We have defined three blocks that outlines our system, as seen in the Block Defi
 \label{fig:bdd}
 \end{figure}
 
-We've identified the Display as a PCD8544. We've also found out that the NES controller uses a CD/TC4021 (8-stage static shift register) to store the state of the controller. Therefore, we'll have write at least two drivers for our system: one to interface the display and one to interface the controller.
+We've identified the Display as a PCD8544. We've also found out that the NES controller uses a CD/TC4021 (8-stage static shift register) to store the state of the controller. Therefore, we'll have to write at least two drivers for our system: one to interface the display and one to interface the controller.
 
 We have chosen to describe our system using an Internal Block Diagram (IBD) as seen in Figure~\ref{fig:ibd}. The IBD shows the connections between the blocks.
 
