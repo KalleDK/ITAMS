@@ -2,28 +2,18 @@
 \markboth{\MakeUppercase{Conclusion}}{\MakeUppercase{Conclusion}}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-\improvement{Write conclusion}
 We set out to implement the classic game Snake that Nokia made famous,
 with their Nokia 3210 phone. 
 Since we had essentially the same screen as was on that phone this should be no problem at all.
 
-We started out by implementing a driver so that we could interface with the display,
-this led us to write two drivers one for SPI and one for the PCD8544 that used to SPI driver.
-Theese drivers worked quite well even if there was a bit of trouble getting the display to run, we had to figure out the right way to initialize the display.
-Since we made the drivers for general purpose, it was now very easy to build ontop of them.
+We started out by implementing a driver so that we could interface with the display. This led us to write two drivers one for SPI and one for the PCD8544 that used to SPI driver. These drivers worked quite well even if there was a bit of trouble getting the display to run, we had figured out the right way to initialize the display. Since we made the drivers for general purpose, it was now very easy to build on top of them.
 
-We decided that since the display only takes data and cannot be asked for its ram content, that we 
-would make a screen buffer on the microprocessor. The purpose of the buffer was to keep the contents of the screen in memory,
-the buffer also allowed us to make function for drawing to the screen (like drawing a square).
+We decided, since the display only takes data and cannot be asked for its ram contents, that we would implement a screen buffer on the microcontroller. The purpose of the buffer was to keep the contents of the screen in memory. The buffer allowed us to make function for drawing to the screen (like drawing a square).
 
-We then asked ourselves what good is a game if you cannot control it, this led us to make driver for a Nintendo Entertainment System controller.
-The controller is essentially just a shift register which can be clocked to get data from it so we made a software SPI driver for this purpose.
+We then asked ourselves what good is a game if you cannot control it, this led us to create a driver for a NES controller. The controller is essentially just a shift register which can be clocked to get data from it. This resulted in software SPI implementation for the purpose of communicating with the shift register.
 
-Now we had everything in place to make a game, we decided that the best way to go about it was to keep a representation of the playing field in memory.
-This field was an array of bytes where every bit had meaning like what type the field was i.e. Snake, border or fruit.
-We used at trick here to save a bit of memory, since the snake is 3 pixels wide we could just make the field smaller in memory by dividing the screens pixel count with 3,
-then before writeing to the display we could scale by a factor of 3.
+Now we had everything in place to make a game, we decided that the best way to go about it was to keep a representation of the playing field in memory. This field was an array of bytes where every bit contributed to the type of the field e.g. snake, border or fruit.
 
-All in all this project has been quite succesful, we made a game that works quite well and we managed to interface the hardware quite painlessly.
-We learned alot about timeing for the to components we interfaced and we had to write software that was optimal for a memory constrained environment even so we still tried to use modern programming paradigms.
-All in all it worked quite well combining our knowledge of modern C++ and using best practices for embedded software.
+We used at trick here to save a bit of memory. Since the snake is three pixels wide, we could just make the field smaller in memory by dividing the screens pixel count with 3. Then before writing to the display, we could scale by a factor of 3.
+
+All in all this project has been quite successful. We made a game that works quite well and we managed to interface the hardware quite painlessly. We learned a lot about timing for the two components we interfaced and we had to write software that was optimal for a memory constrained environment. Even so we still tried to use modern programming paradigms. It worked quite well combining our knowledge of modern C++ and using best practices for embedded software.
