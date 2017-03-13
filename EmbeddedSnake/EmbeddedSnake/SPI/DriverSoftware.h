@@ -9,7 +9,11 @@
 #ifndef SPI_DRIVERSOFTWARE_H_
 #define SPI_DRIVERSOFTWARE_H_
 
+#include "Enums.h"
+
 namespace SPI {
+	
+	
 	
 	template <size_t REGISTER_SIZE>
 	struct BufferValueType {
@@ -65,7 +69,7 @@ namespace SPI {
 		using clock = CLOCK;	
 	};
 
-	template <typename BUFFER, typename PINS, uint8_t T_REM, uint8_t T_WH, uint8_t T_H, uint8_t T_SU>
+	template <typename BUFFER, typename PINS, typename MODE, uint8_t T_REM, uint8_t T_WH, uint8_t T_H, uint8_t T_SU>
 	class DriverSoftware {
 		
 		public:
@@ -86,12 +90,18 @@ namespace SPI {
 		protected:
 		private:
 		
+		template<bool B, class T = void>
+		struct enable_if {};
+
+		template<class T>
+		struct enable_if<true, T> { typedef T type; };
+		
 		// Methods
 		public:
 		DriverSoftware() {
 			init();
 		}
-		
+
 		inline buffer_type read() {
 			
 			buffer_type buffer;
@@ -99,18 +109,12 @@ namespace SPI {
 			// Start the transmission
 			start_transmission();
 			
-			// Read all but 1 bit (as you don't need to clock for the first)
-			for (auto i = 0u; i < number_of_bits-1; ++i)
-			{
-				// Read the bit
-				buffer.add_bit(read_bit());
-				
-				// Go to next bit
-				pulse();
+			// Read all bits
+			for (auto i = 0u; i < number_of_bits; ++i)
+			{	
+				// Get the next bit
+				pulse(buffer);
 			}
-			
-			// Read the last bit
-			buffer.add_bit(read_bit());
 			
 			// End Transmission
 			end_transmission();
@@ -127,10 +131,55 @@ namespace SPI {
 			
 			// Setting CLOCK pin to OUTPUT and LOW
 			clock_pin::set_output();
-			clock_pin::clear();
+			space();
 			
 			// Setting DATA pin to INPUT
 			data_pin::set_input();
+			
+		}
+		
+		template<typename Q = MODE>
+		inline typename enable_if<(Q::cpha == 0), void>::type
+		pulse(buffer_type& buffer) {
+			buffer.add_bit(read_bit());
+			mark();
+			space();
+		}
+		
+		template<typename Q = MODE>
+		inline typename enable_if<(Q::cpha == 1), void>::type
+		pulse(buffer_type& buffer) {
+			mark();
+			buffer.add_bit(read_bit());
+			space();
+		}
+		
+		template<typename Q = MODE>
+		inline typename enable_if<(Q::cpol == 0), void>::type
+		mark() {
+			clock_pin::set();
+			_delay_us(T_H / 1000);
+		}
+		
+		template<typename Q = MODE>
+		inline typename enable_if<(Q::cpol == 0), void>::type
+		space() {
+			clock_pin::clear();
+			_delay_us(T_SU / 1000);
+		}
+		
+		template<typename Q = MODE>
+		inline typename enable_if<(Q::cpol == 1), void>::type
+		mark() {
+			clock_pin::clear();
+			_delay_us(T_H / 1000);
+		}
+		
+		template<typename Q = MODE>
+		inline typename enable_if<(Q::cpol == 1), void>::type
+		space() {
+			clock_pin::set();
+			_delay_us(T_SU / 1000);
 		}
 		
 		bit_type read_bit() {
@@ -147,12 +196,7 @@ namespace SPI {
 			_delay_us(T_WH / 1000);
 		}
 		
-		inline void pulse() {
-			clock_pin::set();
-			_delay_us(T_H / 1000);
-			clock_pin::clear();
-			_delay_us(T_SU / 1000);
-		}
+		
 		
 	};
 

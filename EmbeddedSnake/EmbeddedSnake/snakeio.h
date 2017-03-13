@@ -23,7 +23,7 @@ using TC4021_T = TC4021::Driver<TC4021::Buffer<8>, NES_Pins>;
 using CONTROLLER_T = NES::Controller<TC4021_T>;
 
 #include "SPI/Driver.h"
-using SPI_T = SPI::Driver<SPI::Order::MSB_FIRST, SPI::Mode::SAMPLE_RISING_SETUP_FALLING, SPI::Prescale::SCK_FREQ_PRESCALE_4>;
+using SPI_T = SPI::Driver<SPI::Order::MSB_FIRST, SPI::SampleRisingSetupFalling, SPI::Prescale::SCK_FREQ_PRESCALE_4>;
 
 #include "PD8544/Driver.h"
 using DISPLAY_T = PD8544::Driver<SPI_T>;

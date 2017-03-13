@@ -20,7 +20,7 @@ namespace Screen {
 		uint8_t row;
 		
 	};
-	}
+}
 
 
 

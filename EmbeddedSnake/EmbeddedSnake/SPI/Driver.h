@@ -10,30 +10,11 @@
 #define __SPIDRIVER_H__
 
 #include <avr/io.h>
+#include "Enums.h"
 
 namespace SPI {
 
-	enum Order : unsigned char
-	{
-		MSB_FIRST = 0,
-		LSB_FIRST = 1
-	};
-
-	enum Mode : unsigned char
-	{
-		SAMPLE_RISING_SETUP_FALLING = 0,
-		SETUP_RISING_SAMPLE_FALLING = 1,
-		SAMPLE_FALLING_SETUP_RISING = 2,
-		SETUP_FALLING_SAMPLE_RISING = 3
-	};
-
-	enum Prescale : unsigned char
-	{
-		SCK_FREQ_PRESCALE_4 = 0
-	};
-
-
-	template <Order ORDER, Mode MODE, Prescale PRESCALE>
+	template <Order ORDER, typename MODE, Prescale PRESCALE>
 	class Driver
 	{
 	public:
@@ -57,11 +38,11 @@ namespace SPI {
 
 	private:
 		static const unsigned char Order = static_cast<uint8_t>(ORDER);
-		static const unsigned char Mode = static_cast<uint8_t>(MODE);
+		static const unsigned char Mode = MODE::value;
 		static const unsigned char Prescale = static_cast<uint8_t>(PRESCALE);
 	};
 	
-	template <Order ORDER, Mode MODE, Prescale PRESCALE>
+	template <Order ORDER, typename MODE, Prescale PRESCALE>
 	void Driver<ORDER, MODE, PRESCALE>::Init() {
 		// Setup SPI Pins communication
 		DDRB |= (1 << Pins::Clock)|(1 << Pins::Mosi)|(1 << Pins::Enable);
@@ -75,7 +56,7 @@ namespace SPI {
 		SPSR |= ((Prescale >> 2) << SPI2X);
 	}
 
-	template <Order ORDER, Mode MODE, Prescale PRESCALE>
+	template <Order ORDER, typename MODE, Prescale PRESCALE>
 	void Driver<ORDER, MODE, PRESCALE>::Write(unsigned char bits) {
 		// Set SCE low
 		//PORTB &= ~(1 << PB4);
@@ -88,12 +69,12 @@ namespace SPI {
 		//PORTB |= (1 << PB4);
 	}
 
-	template <Order ORDER, Mode MODE, Prescale PRESCALE>
+	template <Order ORDER, typename MODE, Prescale PRESCALE>
 	void Driver<ORDER, MODE, PRESCALE>::Enable() {
 		PORTB &= ~(1 << Pins::Enable);
 	}
 	
-	template <Order ORDER, Mode MODE, Prescale PRESCALE>
+	template <Order ORDER, typename MODE, Prescale PRESCALE>
 	void Driver<ORDER, MODE, PRESCALE>::Disable() {
 		PORTB |= (1 << Pins::Enable);
 	}
