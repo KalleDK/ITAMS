@@ -12,4 +12,46 @@ As Buffer the SPI::Buffer can be used, which takes a single argument to know how
 
 The three pins is the Data In, Latch and Clock.
 
-The Mode type should have a cpol and a cpha value. This helps eliminating and choose functions for the trasfers.
+The Mode type should have a cpol and a cpha value. This helps eliminating and choose functions for the trasfers (see Listing~\ref{lst:cpol_pulse}).
+
+\begin{lstlisting}[caption={CPOL Determines when to sample},label={lst:cpol_pulse},frame=tlrb, language=C++]{Name}
+template<typename Q = MODE>
+inline typename enable_if<(Q::cpha == 0), void>::type
+pulse(buffer_type& buffer) {
+    buffer.add_bit(read_bit());
+  	mark();
+  	space();
+}
+
+template<typename Q = MODE>
+inline typename enable_if<(Q::cpha == 1), void>::type
+pulse(buffer_type& buffer) {
+    mark();
+  	buffer.add_bit(read_bit());
+  	space();
+}
+\end{lstlisting}
+
+\subsubsection{NES Controller}
+
+The NES Controller uses the SPI to read the states of the button on the controller. The only function used is the update function, that refreshes the states in the object (see Listing~\ref{lst:controller_update}).
+
+\begin{lstlisting}[caption={Updating the state of the controller},label={lst:controller_update},frame=tlrb, language=C++]{Name}
+void update() {
+    uint8_t data = base::read();
+		a      = get(data, ButtonOrder::A);
+		b      = get(data, ButtonOrder::B);
+		select = get(data, ButtonOrder::Select);
+		start  = get(data, ButtonOrder::Start);
+		up     = get(data, ButtonOrder::Up);
+		down   = get(data, ButtonOrder::Down);
+		left   = get(data, ButtonOrder::Left);
+		right  = get(data, ButtonOrder::Right);
+}
+
+inline bool get(const uint8_t& data, ButtonOrder button) {
+    return !!(data & (1 << button));
+}
+\end{lstlisting}
+
+It simply sets the boolean values of the different buttons according to the states from the SPI driver.
