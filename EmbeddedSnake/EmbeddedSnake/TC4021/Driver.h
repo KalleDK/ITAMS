@@ -39,7 +39,7 @@ namespace TC4021 {
 	using Buffer = SPI::Buffer<REGISTER_SIZE>;
 	
 	template<typename BUFFER, typename PINS>
-	using Driver = SPI::DriverSoftware<BUFFER, PINS, 45, 90, 35, 25>;
+	using Driver = SPI::DriverSoftware<BUFFER, PINS, SPI::SampleRisingSetupFalling, 45, 90, 35, 25>;
 	
 }
 

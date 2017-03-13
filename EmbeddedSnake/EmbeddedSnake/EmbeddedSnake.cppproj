@@ -224,6 +224,9 @@
     <Compile Include="SPI\DriverSoftware.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="SPI\Enums.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="TC4021\Driver.h">
       <SubType>compile</SubType>
     </Compile>
