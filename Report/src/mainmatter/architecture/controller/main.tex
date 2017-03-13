@@ -4,22 +4,22 @@
 
 We are using the NES Controller to control the snake. It's a simple controller, also with 8 buttons. The controller uses a TC4021B 8-Stage Static Shift Register. The TC4021B has five connections available to us\cite{toshiba:tc4021b}:
 \begin{itemize}
-\item Clock
-\item Latch
-\item Data
-\item VCC
-\item GND
+\item \texttt{Clock}
+\item \texttt{Latch}
+\item \texttt{Data}
+\item \texttt{VCC}
+\item \texttt{GND}
 \end{itemize}
 
-The VCC needs to be 5V as 3.3V, referring to the displays requirements, is not enough to drive the TC4021B.
+The \texttt{VCC} needs to be 5V as 3.3V, referring to the displays requirements, is not enough to drive the TC4021B.
 
-The Latch in the TC4021B is used to shift between parallel mode and serial mode. In parallel mode, the buttons state is continuously latched into the TC4021B. In serial mode, the Data pin has the state of the "current bit", and each time you make a pulse on the Clock pin the bits are shifted.
+The \texttt{Latch} in the TC4021B is used to shift between parallel mode and serial mode. In parallel mode, the buttons state is continuously latched into the TC4021B. In serial mode, the \texttt{Data} pin has the state of the "current bit", and each time you make a pulse on the \texttt{Clock} pin the bits are shifted.
 
 Therefore you need seven pulses to read the eight bits out. After the seven pulses the Latch needs to be set to high again to get the new inputs as seen in Figure~\ref{fig:controller_cycle}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{architecture/controller_cycle}
+\includegraphics[width=0.9\textwidth]{architecture/controller_cycle}
 \caption{A full transmission, where the B buttons is pushed}
 \label{fig:controller_cycle}
 \end{figure}
@@ -31,19 +31,19 @@ Instead of cutting the cord on the controller, we bought an extension cord. We t
 \begin{figure}
 \centering
 \begin{BVerbatim}
-         +----> Vcc    (yellow)
+         +----> VCC    (yellow)
          |
 4 +---------+ 6
  | x  x  o   \
  | o  o  o  o |
 3 +-----------+ 0
    |  |  |  |
-   |  |  |  +-> Ground (brown)
+   |  |  |  +-> GND    (brown)
    |  |  +----> Pulse  (orange)
    |  +-------> Latch  (black)
    +----------> Data   (red)
 \end{BVerbatim}
-\caption{NES Controller extension cord}
+\caption{Layout of cables in the NES Controller extension cord}
 \label{fig:nes}
 \end{figure}
 
