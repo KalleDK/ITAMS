@@ -1,3 +1,25 @@
 \subsection{Program}
+To tie everything together we have made the program class which handles the state of the game.
+This class is a statemachine, that handles whether we are playing, or are in a menu. 
 
-This class is the base statemachine, that handles is we are playing, or are in a menu. 
+\begin{lstlisting}[caption={A tick of the game},label={lst:tick},frame=tlrb, language=C++]{Name}
+void tick() {
+	switch(state) {
+		case(program_state::Idle) : idle_tick(); break;
+		case(program_state::Playing) : playing_tick(); break;
+		case(program_state::Win) : win_tick(); break;
+		case(program_state::GameOver) : game_over_tick(); break;
+		default: break;
+	}
+}
+\end{lstlisting}
+
+As seen in listing \ref{lst:tick} we have different behaiveour depending upon which state we are in, 
+here it is the tick that is run to forward the game the state is set else where and here we decide what to do in this state.
+
+
+\improvement{KRISTIAN SET IND HER}
+
+As seen in figure ????? we have four states and a reset state that just ensure we get reset properly.
+The reason for the start button pauseing the game and the A button resumes is that we do not check whether the button was pressed in the previous tick.
+This class also forwards button presses to the game and it will only forward one direction even if more than one direction is pressed.
