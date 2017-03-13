@@ -1,3 +1,43 @@
 \subsection{Screen}
 
 The Screen class is used to map the Game onto the Display. This is to keep all the drawing calculation the same place.
+
+The Area's reprensentation only knows about fields, and which are necxt to each other. This class maps this info unto the Screen. Therefore the game only knows which fields are next to each other, and not how they are displayed on the screen.
+
+The first revison was simply to map each field to a 3-by-3 square (see~\ref{fig:screen_fields_rev1}) which worked, but it became really hard to visualise how the snake was tangled as it often was represented like a black blob (see Figure~\ref{fig:screen_fields_rev1}). In the next revesion we added a border to the fields, which was easy to do, as all the drawing and calculations was already collected in this class. This change meant that each field shares it's borders wit the neighbour field. So that when the snake head is drawn' it is not allowed to draw in the border, as it does not know from where it came (see the yellow marking in Figure~\ref{fig:screen_fields_rev2}). The same applies to the part before. It knows only that it goes to the right, and therefor fills out the right border (see the red marking in Figure~\ref{fig:screen_fields_rev2}), but are not allowed to touch they other borders, as it also doesn't know where it came from.
+
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+	\includegraphics[width=.9\textwidth]{implementation/screen_fields_rev1}
+	\caption{First Revision Display Layout}
+	\label{fig:screen_fields_rev1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+	\includegraphics[width=.9\textwidth]{implementation/screen_fields_rev2}
+	\caption{Second Revision Display Layout}
+	\label{fig:screen_fields_rev2}
+\end{minipage}
+\end{figure}
+
+The most important method in the screen class is the convert\_point (see Listing~\ref{lst:convert_point}), as this does the mapping between the two reprensentations of the Area. It return the Point that matches the upper left corner of the 3-by-3 Field.
+
+\begin{lstlisting}[caption={Converting an Area's point to a Display's point},label={lst:convert_point},frame=tlrb, language=C++]{Name}
+buffer_point_type convert_point(const point_type& point) const {
+    return buffer_point_type{point.x * 4 - 2, point.y * 4 - 2};
+}
+\end{lstlisting}
+
+The offsettings is made to squezze in an extra Field, as the border only need a single pixel to be drawn. So if the border would be changed to actually fill the 3-by-3 it wouldn't be displayed on the Display.
+
+So draw the snake going right the it simply draws a rectancle based on the bufferpoint it is given (see Listing~\ref{lst:draw_snake})
+
+\begin{lstlisting}[caption={Drawing a snake turning right},label={lst:draw_snake},frame=tlrb, language=C++]{Name}
+// Example Implementation
+void draw_snake_right(const point_type& point) {
+  auto buffer_point = convert_point(point);
+  buffer_->draw_square(buffer_point, 4 , 3);
+}
+\end{lstlisting}

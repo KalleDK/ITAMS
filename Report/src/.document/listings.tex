@@ -1,19 +1,20 @@
 % Loading languages
 \lstloadlanguages{C, C++}
 
+\definecolor{commentgreen}{rgb}{0.25,0.5,0.35}
+
 % Listing setup
 \lstdefinestyle{all}{
     basicstyle    = \ttfamily\SingleSpacing\scriptsize,
-    numbers       = none, 
+    numbers       = none,
     numberstyle   = \ttfamily\tiny,
     breaklines    = true,
-    commentstyle    = \color{green!80},
     backgroundcolor = \color{gray!8},
     numbersep     = 20pt,
     xleftmargin   = \parindent,
     captionpos    = b,
     keywordstyle  = [1]\color{blue!80}\bfseries,
-    commentstyle  = \itshape\color{green!80},
+    commentstyle  = \itshape\color{commentgreen},
     tabsize       = 2
 }
 
