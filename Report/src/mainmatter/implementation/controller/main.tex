@@ -1,1 +1,15 @@
 \section{Controller}
+
+\subsection{Software SPI}
+
+The Software SPI is not a fully fledged SPI Driver, and only master in.
+
+\subsubsection{Setup}
+
+The Software SPI Driver needs to know which Buffer it should use to return the data in and how many bit's it should read. Which Pins should be used as io. Which clock and sample mode it should use and the 4 timing values.
+
+As Buffer the SPI::Buffer can be used, which takes a single argument to know how many bits it should hold, and via that number it calculate the most optimal container to keep the bits in.
+
+The three pins is the Data In, Latch and Clock.
+
+The Mode type should have a cpol and a cpha value. This helps eliminating and choose functions for the trasfers.
