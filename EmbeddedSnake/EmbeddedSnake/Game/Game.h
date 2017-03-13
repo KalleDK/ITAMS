@@ -62,6 +62,7 @@ namespace Game {
 			return score;
 		}
 		
+		
 		void show_playing_area() {
 			for (field_type_ptr itr = area->begin(); itr != area->end(); ++itr) {
 				auto id = itr->get_id();
@@ -183,7 +184,6 @@ namespace Game {
 		void set_fruit(field_type_ptr field, fruit_value value) {
 			
 			field->set_fruit(value);
-			
 			screen->draw_fruit(area->get_point(field));
 		}
 		
@@ -292,7 +292,7 @@ namespace Game {
 		}
 		
 		void move_snake_into_snake(field_type_ptr field) {
-			if ((field == snake.tail) && (snake.grow == 0) ) {
+			if ((field == snake.tail) && (!snake.is_growing()) ) {
 				move_snake_into_none(field);
 				} else {
 				kill_snake();
@@ -301,14 +301,13 @@ namespace Game {
 		
 		void move_snake_into_none(field_type_ptr field) {
 			
-			if (snake.grow == 0) {
-				move_snake_tail();
-				} else {
-				--snake.grow;
-				--free_spaces;
+			if (snake.is_growing()) {
+				free_spaces -= snake.grew();
 				if (free_spaces == 0) {
 					player = player_state::Won;
 				}
+			} else {
+				move_snake_tail();
 			}
 			
 			move_snake_head(field);
@@ -317,7 +316,7 @@ namespace Game {
 		
 		void move_snake_into_fruit(field_type_ptr field) {
 			
-			snake.grow += static_cast<uint8_t>(field->get_fruit());
+			snake.grow(static_cast<uint8_t>(field->get_fruit()));
 			score      += static_cast<uint8_t>(field->get_fruit()) ;
 			
 			move_snake_into_none(field);

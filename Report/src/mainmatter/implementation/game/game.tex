@@ -1,3 +1,23 @@
 \subsection{Game}
 
-This is the main engine of the game.
+The Game is the engine of the game. It tells the Screen what to draw, it tells the Area what should be put in each Field, and it moves the Snake based on inputs from the player.
+
+When the Game starts (or is reset), it starts by clearing the Area (setting all fields to None), then adding the border, inserting a fruit and the snake itself. The snake starts in a single field, but with a growth of 3, so it will become a 4 piece snake after a few moves. The Fruit added is an Apple, the only 2 point Fruit.
+
+Afterwards, on each tick a method is called based on what the player is pushing. As the program runs too fast for a player we have a templated Divider, so that it takes 100 ticks before a move. If the input is a Direction, and the Direction is not opposite of the last direction, the Snake will then move that way. If it is anything else, the Snake will move in the Direction is was moving in before.
+
+When the Snake moves, the Game gets the type of the Field it want's to enter and calls the method associated with it. The most used it the move\_snake\_into\_none (see Listing \ref{lst:move_snake_into_none}) Here the game checks if the snake is growing. If the Snake grows we have one less Field and is closer to the winning condition, where there is no more free spaces left. If the Snake does not grow, it has to move the tail. This has to happen before the movement of the head, as the head can move into the space where the tail was. Then the head is moved, and the Game waits for another input from the player.
+
+\begin{lstlisting}[caption={Drawing a snake turning right},label={lst:draw_snake},frame=tlrb, language=C++]{Name}
+void move_snake_into_none(field_type_ptr field) {
+    if (snake.is_growing()) {
+        move_snake_tail();
+    } else {
+        free_spaces -= snake.grew();
+        if (free_spaces == 0) {
+            player = player_state::Won;
+        }
+    }
+  	move_snake_head(field);
+}
+\end{lstlisting}

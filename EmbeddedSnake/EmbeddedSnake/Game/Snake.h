@@ -15,14 +15,32 @@ namespace Game {
 		
 		Snake() = default;
 		
-		Snake(FIELD* field, DIRECTION direction, uint16_t grow) : head(field), tail(field), grow(grow), direction(direction) {};
+		Snake(FIELD* field, DIRECTION direction, uint16_t missing_growth) : head(field), tail(field), direction(direction), missing_growth(missing_growth) {};
 
 		FIELD* head;
 		FIELD* tail;
 		
-		uint16_t grow;
+		void grow(uint16_t size) {
+			missing_growth += size;
+		}
+		
+		uint16_t grew(uint16_t size) {
+			missing_growth -= size;
+			return size;
+		}
+		
+		uint16_t grew() {
+			return grew(1);
+		}
+		
+		bool is_growing() {
+			return missing_growth > 0;
+		}
 		
 		DIRECTION direction;
+		
+		private:
+		uint16_t missing_growth;
 		
 	};
 }
