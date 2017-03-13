@@ -1,6 +1,6 @@
 \section{Display}
 
-The driver for the PD8544 is our way to interface the display. We will implement this driver by using key data from the data sheet on the chip, we've found.
+The driver for the PCD8544 is our way to interface the display. We will implement this driver by using key data from the data sheet on the chip, we've found.
 
 The PD8544 has eight connections available to us\cite{philips:pcd8544}:
 \begin{itemize}
@@ -14,7 +14,7 @@ The PD8544 has eight connections available to us\cite{philips:pcd8544}:
 \item \texttt{GND}
 \end{itemize}
 
-We will need to connect to most of these and interface them correctly in order to use the display. The PD8544 uses a serial interface, which means we are only to send one bit at a time.
+We will need to connect to most of these and interface them correctly in order to use the display. The PCD8544 uses a serial interface, which means we are only to send one bit at a time.
 
 The \texttt{Data/Control} connection to select whether we are sending control commands or data to the display. The connection has to be \texttt{HIGH} for data and \texttt{LOW} for commands\cite{philips:pcd8544}.
 
@@ -22,7 +22,7 @@ The \texttt{Clock Enable} connection is used to tell the display, that we have i
 
 The \texttt{Reset} connection is used to reset the display. The rest of the connections are used for power to the display and the back light.
 
-Since the chip uses a serial interface, we have decided to use the ATMEGA32's SPI (Serial Peripheral interface). 
+Since the chip uses a serial interface, we have decided to use the ATmega32's SPI (Serial Peripheral interface). 
 Since we are only able to send data to the display, not receive, we only have use for the \texttt{MOSI} (Master Out, Slave In) connection, and not the \texttt{MISO} (Master In, Slave Out) connection.
 
 The display runs on 3.3V. Since our microcontroller runs on 5V, we have to deal with this. 
