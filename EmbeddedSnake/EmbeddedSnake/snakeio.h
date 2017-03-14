@@ -12,8 +12,8 @@ using Leds = PortC;
 
 #include "TC4021/Driver.h"
 using NES_Data  = Pin<PortD, PD0>;
-using NES_Clock = Pin<PortD, PD1>;
-using NES_Latch = Pin<PortD, PD7>;
+using NES_Clock = Pin<PortD, PD2>;
+using NES_Latch = Pin<PortD, PD1>;
 
 using NES_Pins = SPI::Pins<NES_Data, NES_Latch, NES_Clock>;
 
